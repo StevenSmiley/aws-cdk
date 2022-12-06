@@ -1,12 +1,16 @@
+import * as iam from '@aws-cdk/aws-iam';
+import * as kinesis from '@aws-cdk/aws-kinesis';
 import * as logs from '@aws-cdk/aws-logs';
+import * as s3 from '@aws-cdk/aws-s3';
 import * as core from '@aws-cdk/core';
 import { Construct } from 'constructs';
 import { CfnLoggingConfiguration, CfnRuleGroup } from './wafv2.generated';
 import { WebACL } from './web-acl';
 
 export enum LogDestinationService {
-  CLOUDWATCH = 'cloudwatch',
-  // TODO: Add S3, Kinesis support
+  CLOUDWATCH = 'CLOUDWATCH',
+  S3 = 'S3',
+  KINESIS = 'KINESIS',
 }
 
 export enum LoggingFilterBehavior {
@@ -88,6 +92,7 @@ export interface LoggingConfigurationProps {
 export class LoggingConfiguration extends core.Resource {
   public readonly logDestinationArn: string;
   public readonly logGroup: logs.ILogGroup | undefined;
+  public readonly logBucket: s3.IBucket | undefined;
   constructor(scope: Construct, id: string, props: LoggingConfigurationProps) {
     super(scope, id);
 
@@ -105,30 +110,100 @@ export class LoggingConfiguration extends core.Resource {
     // By default, redact nothing
     const redactedFields = props.redactedFields || [];
 
-    // By default, retain logs for one month
-    const retentionDays =
-      props.logDestinationConfig.retentionDays || logs.RetentionDays.ONE_MONTH;
-
-    // By default, retain the log group when the web ACL is deleted
-    const removalPolicy =
-      props.logDestinationConfig.removalPolicy || core.RemovalPolicy.RETAIN;
-
-    // By default, use the web ACL id in the log destination name
     const logSuffix =
       props.logDestinationConfig.logSuffix || props.webAcl.webAclId;
 
-    // Create a log group
-    this.logGroup = new logs.LogGroup(this, 'LogGroup', {
-      retention: retentionDays,
-      removalPolicy: removalPolicy,
-      logGroupName: `aws-waf-logs-${logSuffix}`,
-    });
+    switch (props.logDestinationConfig.logDestinationService) {
+      case LogDestinationService.S3:
+        this.logBucket = new s3.Bucket(this, 'LogBucket', {
+          bucketName: `aws-waf-logs-${logSuffix}`,
+          removalPolicy: core.RemovalPolicy.RETAIN,
+          blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+          encryption: s3.BucketEncryption.S3_MANAGED,
+          lifecycleRules: [
+            {
+              expiration: core.Duration.days(props.logDestinationConfig.retentionDays || 30),
+              enabled: true,
+            },
+          ],
+        });
+        this.logDestinationArn = this.logBucket.bucketArn;
+        // Permissions required to allow log delivery
+        // See https://docs.aws.amazon.com/waf/latest/developerguide/logging-s3.html#logging-s3-permissions
+        this.logBucket.addToResourcePolicy(
+          new iam.PolicyStatement({
+            sid: 'AWSLogDeliveryWrite',
+            effect: iam.Effect.ALLOW,
+            actions: ['s3:PutObject'],
+            principals: [
+              new iam.ServicePrincipal('delivery.logs.amazonaws.com'),
+            ],
+            resources: [`${this.logBucket.bucketArn}/*`],
+            conditions: {
+              StringEquals: {
+                's3:x-amz-acl': 'bucket-owner-full-control',
+                'aws:SourceAccount': [props.webAcl.env.account],
+              },
+              ArnLike: {
+                'aws:SourceArn': [
+                  `arn:${this.logBucket.stack.partition}:logs:${this.logBucket.stack.region}:${this.logBucket.stack.account}:*`,
+                ],
+              },
+            },
+          }),
+        );
+        this.logBucket.addToResourcePolicy(
+          new iam.PolicyStatement({
+            sid: 'AWSLogDeliveryAclCheck',
+            effect: iam.Effect.ALLOW,
+            actions: ['s3:GetBucketAcl'],
+            principals: [
+              new iam.ServicePrincipal('delivery.logs.amazonaws.com'),
+            ],
+            resources: [this.logBucket.bucketArn],
+            conditions: {
+              StringEquals: {
+                'aws:SourceAccount': [props.webAcl.env.account],
+              },
+              ArnLike: {
+                'aws:SourceArn': [
+                  `arn:${this.logBucket.stack.partition}:logs:${this.logBucket.stack.region}:${this.logBucket.stack.account}:*`,
+                ],
+              },
+            },
+          }),
+        );
+        break;
+      case LogDestinationService.CLOUDWATCH:
+        // By default, retain logs for one month
+        const retentionDays =
+          props.logDestinationConfig.retentionDays || logs.RetentionDays.ONE_MONTH;
 
-    // Log group ARNs include a trailing ':*' that the LoggingConfiguration isn't expecting, so we remove it here.
-    this.logDestinationArn = core.Fn.select(
-      0,
-      core.Fn.split(':*', this.logGroup.logGroupArn),
-    );
+        // By default, retain the log group when the web ACL is deleted
+        const removalPolicy =
+          props.logDestinationConfig.removalPolicy || core.RemovalPolicy.RETAIN;
+
+        // Create a log group
+        this.logGroup = new logs.LogGroup(this, 'LogGroup', {
+          retention: retentionDays,
+          removalPolicy: removalPolicy,
+          logGroupName: `aws-waf-logs-${logSuffix}`,
+        });
+
+        // Log group ARNs include a trailing ':*' that the LoggingConfiguration isn't expecting, so we remove it here.
+        this.logDestinationArn = core.Fn.select(
+          0,
+          core.Fn.split(':*', this.logGroup.logGroupArn),
+        );
+        break;
+      case LogDestinationService.KINESIS:
+        // Create a kinesis stream
+        const kinesisStream = new kinesis.Stream(this, 'Stream', {
+          retentionPeriod: core.Duration.days(props.logDestinationConfig.retentionDays || 30),
+        });
+        this.logDestinationArn = kinesisStream.streamArn;
+        break;
+    }
 
     new CfnLoggingConfiguration(this, 'Resource', {
       resourceArn: props.webAcl.webAclArn,
