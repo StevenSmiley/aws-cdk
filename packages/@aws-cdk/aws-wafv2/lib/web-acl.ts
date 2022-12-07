@@ -9,7 +9,7 @@ import {
   LoggingConfiguration,
   LoggingFilterConfiguration,
 } from './logging-configuration';
-import { ManagedRuleGroupProps } from './rule';
+import { ManagedRuleGroupProps } from './rule-group';
 import { CfnWebACL, CfnWebACLAssociation } from './wafv2.generated';
 
 export enum Scope {
