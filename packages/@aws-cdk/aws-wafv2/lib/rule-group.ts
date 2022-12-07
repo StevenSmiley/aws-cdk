@@ -1,9 +1,12 @@
-import { CfnWebACL } from './wafv2.generated';
+import * as core from '@aws-cdk/core';
+import { Construct } from 'constructs';
+import { CfnRuleGroup, CfnWebACL } from './wafv2.generated';
+import { Scope } from './web-acl';
 
 /**
  * The action to perform if a rule matches.
  */
-export abstract class RuleAction {
+export class RuleAction {
   /**
    * Allow requests.
    */
@@ -74,7 +77,7 @@ interface ManagedRuleGroupThirdPartyProps extends ManagedRuleGroupProps {
 }
 
 // TODO: Annotations
-export abstract class ManagedRuleGroup {
+export class ManagedRuleGroup {
   /**
    * The Amazon IP reputation list rule group contains rules that are based on Amazon internal threat intelligence.
    * This is useful if you would like to block IP addresses typically associated with bots or other threats.
@@ -359,8 +362,92 @@ export enum AggregateKeyType {
 }
 
 // rule group: name, description?, cw metric name, rules[], capacity 1-1500. rules prioritized by order.
-export class RuleGroup { }
-// rule: name, type(regular or rate-based), action, labels[]?, statementmatcher (one, all/AND, any/OR, doesn't/NOT))
-export class Rule { }
-// statement: negate?=false. several different types with unique parameters.
-export class Statement { }
+export interface RuleGroupProps {
+  // TODO: can/should we make this optional with default to the sum of the rules' capacity?
+  readonly capacity: number;
+  // TODO: customResponseBodies
+  // readonly customResponseBodies?: CfnWebACL.CustomResponseBodyProperty[];
+  readonly description?: string;
+  readonly name?: string;
+  readonly rules?: Rule[];
+  readonly scope: Scope;
+  readonly tags?: core.Tag[];
+  readonly visibilityConfig: CfnWebACL.VisibilityConfigProperty;
+}
+export class RuleGroup extends core.Resource {
+  constructor(scope: Construct, id: string, props: RuleGroupProps) {
+    super(scope, id);
+
+    new CfnRuleGroup(this, 'RuleGroup', {
+      capacity: props.capacity,
+      scope: props.scope,
+      // customResponseBodies: props.customResponseBodies,
+      visibilityConfig: props.visibilityConfig,
+      description: props.description,
+      name: props.name,
+      rules: props.rules as CfnWebACL.RuleProperty[],
+      tags: props.tags,
+    });
+  }
+}
+export interface RuleProps {
+  readonly name: string;
+  readonly action: RuleAction;
+  readonly matchLogic: MatchLogic;
+  readonly statements: Statement[];
+  // TODO: make this optional with sane default
+  readonly visibilityConfig: CfnWebACL.VisibilityConfigProperty;
+  // TODO: make this optional
+  readonly captchaConfig: CfnWebACL.CaptchaConfigProperty;
+  readonly labels?: any[];
+}
+
+export class Rule {
+  // TODO: Make sure if you get MatchLogic=MATCH_ONE that you one get one statement
+  public static RateBased(): CfnWebACL.RuleProperty {
+    return {};
+  }
+
+  public static Regular(): CfnWebACL.RuleProperty {
+    return {};
+  }
+}
+
+enum MatchLogic {
+  MATCH_ONE = 'MATCH_ONE',
+  MATCH_ALL = 'MATCH_ALL',
+  MATCH_ANY = 'MATCH_ANY',
+  MATCH_NONE = 'MATCH_NONE',
+}
+
+interface StatementProps {
+  readonly negate?: boolean;
+  readonly textTransformations?: any[]; // TODO: better type
+}
+
+export class MatchCondition {
+  public StringMatch() { return; }
+  public StringPatternMatch() { return; }
+  public SizeMatch() { return; }
+  public AttackMatch() { return; }
+}
+
+export interface InspectSingleHeaderProps extends StatementProps {
+  readonly headerFieldName: string;
+  readonly matchCondition: MatchCondition;
+}
+
+export class Statement {
+  public static GeoMatch() { return; }
+  public static IPMatch() { return; }
+  public static LabelMatch() { return; }
+  public static InspectSingleHeader() { return; }
+  public static InspectAllHeaders() { return; }
+  public static InspectCookies() { return; }
+  public static InspectSingleQueryParameter() { return; }
+  public static InspectAllQueryParameters() { return; }
+  public static InspectURIPath() { return; }
+  public static InspectQueryString() { return; }
+  public static InspectBody() { return; }
+  public static InspectHTTPMethod() { return; }
+}

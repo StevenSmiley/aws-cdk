@@ -9,7 +9,7 @@ import {
   LoggingConfiguration,
   LoggingFilterConfiguration,
 } from './logging-configuration';
-import { ManagedRuleGroupProps } from './rule-group';
+import { ManagedRuleGroup } from './rule-group';
 import { CfnWebACL, CfnWebACLAssociation } from './wafv2.generated';
 
 export enum Scope {
@@ -75,7 +75,7 @@ export interface WebACLProps {
    * and parameters that govern how AWS WAF handles them.
    */
   // TODO: support Rule, RuleGroup
-  readonly rules?: ManagedRuleGroupProps[];
+  readonly rules?: ManagedRuleGroup[];
   /**
    * Specifies how AWS WAF should handle CAPTCHA evaluations for rules that don't have their own CaptchaConfig settings.
    *
