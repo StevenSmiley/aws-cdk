@@ -420,11 +420,6 @@ enum MatchLogic {
   MATCH_NONE = 'MATCH_NONE',
 }
 
-interface StatementProps {
-  readonly negate?: boolean;
-  readonly textTransformations?: any[]; // TODO: better type
-}
-
 export class MatchCondition {
   public StringMatch() { return; }
   public StringPatternMatch() { return; }
@@ -437,17 +432,57 @@ export interface InspectSingleHeaderProps extends StatementProps {
   readonly matchCondition: MatchCondition;
 }
 
+export interface InspectSingleQueryParameterProps extends StatementProps {
+  readonly queryArgument: string;
+  readonly matchCondition: MatchCondition;
+}
+
+export interface InspectURIPathProps extends StatementProps {
+  readonly matchCondition: MatchCondition;
+}
+
+export interface InspectQueryStringProps extends StatementProps {
+  readonly matchCondition: MatchCondition;
+}
+
+export interface InspectHTTPMethodProps extends StatementProps {
+  readonly matchCondition: MatchCondition;
+}
+
+export interface GeoMatchProps extends StatementProps {
+  readonly countryCodes: string[]; // TODO: Can we provide an enum for this?
+  readonly forwardedIpConfiguration?: ForwardedIPConfiguration; // TODO: Make a better type for this
+}
+
+type ForwardedIPConfiguration = {
+  fallbackBehavior: 'MATCH' | 'NO_MATCH';
+  headerName: string;
+}
+
+interface StatementProps {
+  readonly negate?: boolean;
+  readonly textTransformations?: any[]; // TODO: better type
+}
+
 export class Statement {
-  public static GeoMatch() { return; }
+  public static GeoMatch(props: GeoMatchProps) {
+    const geoMatchStatement = {
+      GeoMatchStatement: {
+        CountryCodes: props.countryCodes,
+      },
+      ...props.forwardedIpConfiguration,
+    };
+    return geoMatchStatement;
+  }
   public static IPMatch() { return; }
   public static LabelMatch() { return; }
-  public static InspectSingleHeader() { return; }
+  public static InspectSingleHeader(props: InspectSingleHeaderProps) { return; }
   public static InspectAllHeaders() { return; }
   public static InspectCookies() { return; }
-  public static InspectSingleQueryParameter() { return; }
+  public static InspectSingleQueryParameter(props: InspectSingleQueryParameterProps) { return; }
   public static InspectAllQueryParameters() { return; }
-  public static InspectURIPath() { return; }
-  public static InspectQueryString() { return; }
+  public static InspectURIPath(props: InspectURIPathProps) { return; }
+  public static InspectQueryString(props: InspectQueryStringProps) { return; }
   public static InspectBody() { return; }
-  public static InspectHTTPMethod() { return; }
+  public static InspectHTTPMethod(props: InspectHTTPMethodProps) { return; }
 }
