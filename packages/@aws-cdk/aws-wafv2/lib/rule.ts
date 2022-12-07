@@ -52,7 +52,7 @@ export abstract class RuleAction {
   // CloudFormation does not yet support the Challenge action
 }
 
-// TODO: Descriptions
+// TODO: Annotations
 export interface ManagedRuleGroupProps {
   readonly name?: string;
   readonly visibilityConfig?: CfnWebACL.VisibilityConfigProperty;
@@ -63,17 +63,17 @@ export interface ManagedRuleGroupProps {
   readonly managedRuleGroupConfigs?: CfnWebACL.ManagedRuleGroupConfigProperty[];
 }
 
-// TODO: Descriptions
+// TODO: Annotations
 interface ManagedRuleGroupAWSProps extends ManagedRuleGroupProps {
   readonly rule: string;
 }
-// TODO: Descriptions
+// TODO: Annotations
 interface ManagedRuleGroupThirdPartyProps extends ManagedRuleGroupProps {
   readonly vendor: string;
   readonly ruleName: string;
 }
 
-// TODO: Descriptions
+// TODO: Annotations
 export abstract class ManagedRuleGroup {
   /**
    * The Amazon IP reputation list rule group contains rules that are based on Amazon internal threat intelligence.

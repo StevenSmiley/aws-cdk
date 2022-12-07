@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import { CfnRegexPatternSet } from './wafv2.generated';
 import { Scope } from './web-acl';
 
+// TODO: Annotations
 export interface RegexPatternSetProps {
   readonly name?: string;
   readonly description?: string;

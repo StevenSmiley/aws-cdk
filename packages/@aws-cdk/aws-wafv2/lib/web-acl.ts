@@ -197,6 +197,7 @@ export class WebACL extends core.Resource {
   // TODO: Check scope compatibility (regional vs cloudfront)
   // TODO: Keep track of attachedResources in array
   // Support for AppSync unavailable while AppSync package is experimental
+  // TODO: Annotation with @example
   public attachTo(
     protectedResource:
     | cloudfront.Distribution

@@ -7,6 +7,7 @@ import { Construct } from 'constructs';
 import { CfnLoggingConfiguration, CfnRuleGroup } from './wafv2.generated';
 import { WebACL } from './web-acl';
 
+// TODO: Annotations
 export enum LogDestinationService {
   CLOUDWATCH = 'CLOUDWATCH',
   S3 = 'S3',
