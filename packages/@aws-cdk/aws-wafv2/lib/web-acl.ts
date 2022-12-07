@@ -1,3 +1,7 @@
+import * as apigateway from '@aws-cdk/aws-apigateway';
+import * as cloudfront from '@aws-cdk/aws-cloudfront';
+import * as cognito from '@aws-cdk/aws-cognito';
+import * as elbv2 from '@aws-cdk/aws-elasticloadbalancingv2';
 import * as core from '@aws-cdk/core';
 import { Construct } from 'constructs';
 import {
@@ -6,7 +10,7 @@ import {
   LoggingFilterConfiguration,
 } from './logging-configuration';
 import { ManagedRuleGroupProps } from './rule';
-import { CfnWebACL } from './wafv2.generated';
+import { CfnWebACL, CfnWebACLAssociation } from './wafv2.generated';
 
 export enum Scope {
   REGIONAL = 'REGIONAL',
@@ -190,22 +194,66 @@ export class WebACL extends core.Resource {
     );
   }
 
-  // TODO: private attachTo for API Gateway, ALB, Cognito User Pool, AppSync, maybe CloudFront
-
-  // TODO: also support RuleGroup, Rule
-  private prioritizeRules(
-    rules: any[] | undefined,
-  ): CfnWebACL.RuleProperty[] {
-    // For each rule, set the priority to the index of the rule
-    if (rules !== undefined) {
-      const prioritizedRules: CfnWebACL.RuleProperty[] = rules.map(
-        (rule) => {
-          return {
-            priority: rules.indexOf(rule),
-            ...rule,
-          };
+  // TODO: Check scope compatibility (regional vs cloudfront)
+  // TODO: Keep track of attachedResources in array
+  // Support for AppSync unavailable while AppSync package is experimental
+  public attachTo(
+    protectedResource:
+    | cloudfront.Distribution
+    | elbv2.ApplicationLoadBalancer
+    | apigateway.Stage
+    | cognito.UserPool,
+  ) {
+    if (protectedResource instanceof cloudfront.Distribution) {
+      // Associate with CloudFront distribution using property override
+      const cloudfrontDistribution = protectedResource.node
+        .defaultChild as cloudfront.CfnDistribution;
+      cloudfrontDistribution.addPropertyOverride(
+        'DistributionConfig.WebACLId',
+        this.webAclArn,
+      );
+    } else if (protectedResource instanceof apigateway.Stage) {
+      new CfnWebACLAssociation(
+        this,
+        `WeblAclAssociation-${protectedResource.toString()}`,
+        {
+          resourceArn: protectedResource.stageArn,
+          webAclArn: this.webAclArn,
         },
       );
+    } else if (
+      protectedResource instanceof elbv2.ApplicationLoadBalancer
+    ) {
+      new CfnWebACLAssociation(
+        this,
+        `WeblAclAssociation-${protectedResource.toString()}`,
+        {
+          resourceArn: protectedResource.loadBalancerArn,
+          webAclArn: this.webAclArn,
+        },
+      );
+    } else if (protectedResource instanceof cognito.UserPool) {
+      new CfnWebACLAssociation(
+        this,
+        `WeblAclAssociation-${protectedResource.toString()}`,
+        {
+          resourceArn: protectedResource.userPoolArn,
+          webAclArn: this.webAclArn,
+        },
+      );
+    }
+  }
+
+  // TODO: also support RuleGroup, Rule
+  private prioritizeRules(rules: any[] | undefined): CfnWebACL.RuleProperty[] {
+    // For each rule, set the priority to the index of the rule
+    if (rules !== undefined) {
+      const prioritizedRules: CfnWebACL.RuleProperty[] = rules.map((rule) => {
+        return {
+          priority: rules.indexOf(rule),
+          ...rule,
+        };
+      });
       return prioritizedRules;
     } else {
       return [];
