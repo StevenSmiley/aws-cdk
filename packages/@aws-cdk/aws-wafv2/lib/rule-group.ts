@@ -272,7 +272,7 @@ export class ManagedRuleGroup {
   }
 
   public static ThirdParty(props: ManagedRuleGroupThirdPartyProps) {
-    const overrideAction = props.overrideToCount ? { none: {} } : { count: {} };
+    const overrideAction = props.overrideToCount ? { count: {} } : { none: {} };
     const thirdPartyRule = {
       name: props.name || `${props.vendor}-${props.ruleName}`,
       statement: {
@@ -292,7 +292,7 @@ export class ManagedRuleGroup {
   }
 
   private static AWS(props: ManagedRuleGroupAWSProps) {
-    const overrideAction = props.overrideToCount ? { none: {} } : { count: {} };
+    const overrideAction = props.overrideToCount ? { count: {} } : { none: {} };
     const awsManagedRuleGroup = {
       name: props.name || props.rule,
       statement: {
