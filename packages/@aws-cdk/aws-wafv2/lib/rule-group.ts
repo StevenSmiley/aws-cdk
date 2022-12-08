@@ -176,7 +176,7 @@ export class ManagedRuleGroup {
    */
   public static POSIX(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: 'AWSManagedRulesPosixRuleSet',
+      rule: 'AWSManagedRulesUnixRuleSet',
       ...props,
     });
   }
