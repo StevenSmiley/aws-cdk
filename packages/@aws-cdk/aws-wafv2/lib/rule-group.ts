@@ -1,7 +1,7 @@
-import * as core from "@aws-cdk/core";
-import { Construct } from "constructs";
-import { CfnRuleGroup, CfnWebACL } from "./wafv2.generated";
-import { Scope } from "./web-acl";
+import * as core from '@aws-cdk/core';
+import { Construct } from 'constructs';
+import { CfnRuleGroup, CfnWebACL } from './wafv2.generated';
+import { Scope } from './web-acl';
 
 /**
  * The action to perform if a rule matches.
@@ -11,7 +11,7 @@ export class RuleAction {
    * Allow requests.
    */
   public static allow(
-    customRequestHandling?: CfnWebACL.CustomRequestHandlingProperty
+    customRequestHandling?: CfnWebACL.CustomRequestHandlingProperty,
   ) {
     const ruleAction: CfnWebACL.RuleActionProperty = {
       allow: { customRequestHandling },
@@ -32,7 +32,7 @@ export class RuleAction {
    * Count requests.
    */
   public static count(
-    customRequestHandling?: CfnWebACL.CustomRequestHandlingProperty
+    customRequestHandling?: CfnWebACL.CustomRequestHandlingProperty,
   ) {
     const ruleAction: CfnWebACL.RuleActionProperty = {
       count: { customRequestHandling },
@@ -44,7 +44,7 @@ export class RuleAction {
    * Require token, requests without a valid token will be redirected to a CAPTCHA challenge.
    */
   public static captcha(
-    customRequestHandling?: CfnWebACL.CustomRequestHandlingProperty
+    customRequestHandling?: CfnWebACL.CustomRequestHandlingProperty,
   ) {
     const ruleAction: CfnWebACL.RuleActionProperty = {
       captcha: { customRequestHandling },
@@ -88,7 +88,7 @@ export class ManagedRuleGroup {
    */
   public static IP_REPUTATION(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesAmazonIpReputationList",
+      rule: 'AWSManagedRulesAmazonIpReputationList',
       ...props,
     });
   }
@@ -102,7 +102,7 @@ export class ManagedRuleGroup {
    */
   public static ADMIN_PROTECTION(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesAdminProtectionRuleSet",
+      rule: 'AWSManagedRulesAdminProtectionRuleSet',
       ...props,
     });
   }
@@ -115,7 +115,7 @@ export class ManagedRuleGroup {
    */
   public static KNOWN_BAD_INPUTS(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesKnownBadInputsRuleSet",
+      rule: 'AWSManagedRulesKnownBadInputsRuleSet',
       ...props,
     });
   }
@@ -130,7 +130,7 @@ export class ManagedRuleGroup {
    */
   public static CORE_RULE_SET(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesCommonRuleSet",
+      rule: 'AWSManagedRulesCommonRuleSet',
       ...props,
     });
   }
@@ -144,7 +144,7 @@ export class ManagedRuleGroup {
    */
   public static SQL_INJECTION(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesSQLiRuleSet",
+      rule: 'AWSManagedRulesSQLiRuleSet',
       ...props,
     });
   }
@@ -160,7 +160,7 @@ export class ManagedRuleGroup {
    */
   public static LINUX(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesLinuxRuleSet",
+      rule: 'AWSManagedRulesLinuxRuleSet',
       ...props,
     });
   }
@@ -176,7 +176,7 @@ export class ManagedRuleGroup {
    */
   public static POSIX(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesPosixRuleSet",
+      rule: 'AWSManagedRulesPosixRuleSet',
       ...props,
     });
   }
@@ -191,7 +191,7 @@ export class ManagedRuleGroup {
    */
   public static WINDOWS(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesWindowsRuleSet",
+      rule: 'AWSManagedRulesWindowsRuleSet',
       ...props,
     });
   }
@@ -205,7 +205,7 @@ export class ManagedRuleGroup {
    */
   public static WORDPRESS(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesWordPressRuleSet",
+      rule: 'AWSManagedRulesWordPressRuleSet',
       ...props,
     });
   }
@@ -220,7 +220,7 @@ export class ManagedRuleGroup {
    */
   public static PHP(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesPHPRuleSet",
+      rule: 'AWSManagedRulesPHPRuleSet',
       ...props,
     });
   }
@@ -234,7 +234,7 @@ export class ManagedRuleGroup {
    */
   public static ANONYMOUS_IP(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesAnonymousIpList",
+      rule: 'AWSManagedRulesAnonymousIpList',
       ...props,
     });
   }
@@ -248,7 +248,7 @@ export class ManagedRuleGroup {
    */
   public static BOT_CONTROL(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesBotControlRuleSet",
+      rule: 'AWSManagedRulesBotControlRuleSet',
       ...props,
     });
   }
@@ -266,7 +266,7 @@ export class ManagedRuleGroup {
    */
   public static ACCOUNT_TAKEOVER(props?: ManagedRuleGroupProps) {
     return this.AWS({
-      rule: "AWSManagedRulesATPRuleSet",
+      rule: 'AWSManagedRulesATPRuleSet',
       ...props,
     });
   }
@@ -297,7 +297,7 @@ export class ManagedRuleGroup {
       name: props.name || props.rule,
       statement: {
         managedRuleGroupStatement: {
-          vendorName: "AWS",
+          vendorName: 'AWS',
           name: props.rule,
           excludedRules: props.excludedRules,
           scopeDownStatement: props.scopeDownStatement,
@@ -323,7 +323,7 @@ export enum PositionalConstraint {
   /**
    * The specified part of the web request must include the value of SearchString, but the location doesn't matter.
    */
-  CONTAINS = "CONTAINS",
+  CONTAINS = 'CONTAINS',
   /**
    * The specified part of the web request must include the value of SearchString, and SearchString must contain only
    * alphanumeric characters or underscore (A-Z, a-z, 0-9, or _). In addition, SearchString must be a word, which means that both of the following are true:
@@ -334,19 +334,19 @@ export enum PositionalConstraint {
    * SearchString is at the end of the specified part of the web request or is followed by a character other than an
    * alphanumeric character or underscore (_), for example, BadBot; and -BadBot;.
    */
-  CONTAINS_WORD = "CONTAINS_WORD",
+  CONTAINS_WORD = 'CONTAINS_WORD',
   /**
    * The value of the specified part of the web request must exactly match the value of SearchString.
    */
-  EXACTLY = "EXACTLY",
+  EXACTLY = 'EXACTLY',
   /**
    * The value of SearchString must appear at the beginning of the specified part of the web request.
    */
-  STARTS_WITH = "STARTS_WITH",
+  STARTS_WITH = 'STARTS_WITH',
   /**
    * The value of SearchString must appear at the end of the specified part of the web request.
    */
-  ENDS_WITH = "ENDS_WITH",
+  ENDS_WITH = 'ENDS_WITH',
 }
 
 /**
@@ -356,11 +356,11 @@ export enum AggregateKeyType {
   /**
    * Aggregate the request counts on the IP address from the web request origin.
    */
-  IP = "IP",
+  IP = 'IP',
   /**
    * Aggregate the request counts on the first IP address in an HTTP header.
    */
-  FORWARDED_IP = "FORWARDED_IP",
+  FORWARDED_IP = 'FORWARDED_IP',
 }
 
 // rule group: name, description?, cw metric name, rules[], capacity 1-1500. rules prioritized by order.
@@ -380,7 +380,7 @@ export class RuleGroup extends core.Resource {
   constructor(scope: Construct, id: string, props: RuleGroupProps) {
     super(scope, id);
 
-    new CfnRuleGroup(this, "RuleGroup", {
+    new CfnRuleGroup(this, 'RuleGroup', {
       capacity: props.capacity,
       scope: props.scope,
       // customResponseBodies: props.customResponseBodies,
@@ -416,10 +416,10 @@ export class Rule {
 }
 
 enum MatchLogic {
-  MATCH_ONE = "MATCH_ONE",
-  MATCH_ALL = "MATCH_ALL",
-  MATCH_ANY = "MATCH_ANY",
-  MATCH_NONE = "MATCH_NONE",
+  MATCH_ONE = 'MATCH_ONE',
+  MATCH_ALL = 'MATCH_ALL',
+  MATCH_ANY = 'MATCH_ANY',
+  MATCH_NONE = 'MATCH_NONE',
 }
 
 export class MatchCondition {
@@ -465,7 +465,7 @@ export interface GeoMatchProps extends StatementProps {
 }
 
 type ForwardedIPConfiguration = {
-  fallbackBehavior: "MATCH" | "NO_MATCH";
+  fallbackBehavior: 'MATCH' | 'NO_MATCH';
   headerName: string;
 };
 
@@ -500,7 +500,7 @@ export class Statement {
     return;
   }
   public static InspectSingleQueryParameter(
-    props: InspectSingleQueryParameterProps
+    props: InspectSingleQueryParameterProps,
   ) {
     return;
   }
