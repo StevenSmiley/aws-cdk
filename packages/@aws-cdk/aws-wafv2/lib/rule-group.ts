@@ -59,7 +59,7 @@ export class RuleAction {
 export interface ManagedRuleGroupProps {
   readonly name?: string;
   readonly visibilityConfig?: CfnWebACL.VisibilityConfigProperty;
-  readonly overrideAction?: RuleAction;
+  readonly overrideToCount?: boolean;
   readonly excludedRules?: CfnWebACL.ExcludedRuleProperty[];
   readonly scopeDownStatement?: CfnWebACL.StatementProperty;
   readonly version?: string;
@@ -272,6 +272,7 @@ export class ManagedRuleGroup {
   }
 
   public static ThirdParty(props: ManagedRuleGroupThirdPartyProps) {
+    const overrideAction = props.overrideToCount ? { none: {} } : { count: {} };
     const thirdPartyRule = {
       name: props.name || `${props.vendor}-${props.ruleName}`,
       statement: {
@@ -285,12 +286,13 @@ export class ManagedRuleGroup {
         metricName: `WAF-${props.vendor}-${props.ruleName}`,
         sampledRequestsEnabled: true,
       },
-      overrideAction: props.overrideAction,
+      overrideAction: overrideAction,
     };
     return thirdPartyRule;
   }
 
   private static AWS(props: ManagedRuleGroupAWSProps) {
+    const overrideAction = props.overrideToCount ? { none: {} } : { count: {} };
     const awsManagedRuleGroup = {
       name: props.name || props.rule,
       statement: {
@@ -308,7 +310,7 @@ export class ManagedRuleGroup {
         metricName: `WAF-${props.rule}`,
         sampledRequestsEnabled: true,
       },
-      overrideAction: props.overrideAction,
+      overrideAction: overrideAction,
     };
     return awsManagedRuleGroup;
   }
