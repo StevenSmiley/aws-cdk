@@ -55,28 +55,65 @@ export class RuleAction {
   // CloudFormation does not yet support the Challenge action
 }
 
-// TODO: Annotations
 export interface ManagedRuleGroupProps {
+  /**
+   * The name of the rule group. You cannot change the name of a rule group after you create it.
+   */
   readonly name?: string;
+  /**
+   * Defines and enables Amazon CloudWatch metrics and web request sample collection.
+   *
+   * @default CloudWatch metrics will be enabled and sampled requests will be retained.
+   */
   readonly visibilityConfig?: CfnWebACL.VisibilityConfigProperty;
+  /**
+   * Set all rule actions to count.
+   */
   readonly overrideToCount?: boolean;
+  /**
+   * The rules in the referenced rule group whose actions are set to Count. When you exclude a rule, AWS WAF evaluates it exactly
+   * as it would if the rule action setting were Count. This is a useful option for testing the rules in a rule group without modifying
+   * how they handle your web traffic.
+   */
   readonly excludedRules?: CfnWebACL.ExcludedRuleProperty[];
+  /**
+   * An optional nested statement that narrows the scope of the web requests that are evaluated by the managed rule group.
+   * Requests are only evaluated by the rule group if they match the scope-down statement.
+   */
   readonly scopeDownStatement?: CfnWebACL.StatementProperty;
+  /**
+   * The version of the managed rule group to use. If you specify this, the version setting is fixed until you change it.
+   * If you don't specify this, AWS WAF uses the vendor's default version, and then keeps the version at the vendor's default
+   * when the vendor updates the managed rule group settings.
+   */
   readonly version?: string;
+  /**
+   * Additional information that's used by a managed rule group. Many managed rule groups don't require this.
+   */
   readonly managedRuleGroupConfigs?: CfnWebACL.ManagedRuleGroupConfigProperty[];
 }
 
-// TODO: Annotations
 interface ManagedRuleGroupAWSProps extends ManagedRuleGroupProps {
+  /**
+   * The name of the managed rule group.
+   */
   readonly rule: string;
 }
-// TODO: Annotations
+
 interface ManagedRuleGroupThirdPartyProps extends ManagedRuleGroupProps {
+  /**
+   * The name of the managed rule group vendor.
+   */
   readonly vendor: string;
+  /**
+   * The name of the managed rule group.
+   */
   readonly ruleName: string;
 }
 
-// TODO: Annotations
+/**
+ * Managed rule groups are collections of predefined, ready-to-use rules that AWS and AWS Marketplace sellers write and maintain for you.
+ */
 export class ManagedRuleGroup {
   /**
    * The Amazon IP reputation list rule group contains rules that are based on Amazon internal threat intelligence.
@@ -365,7 +402,7 @@ export enum AggregateKeyType {
 
 // rule group: name, description?, cw metric name, rules[], capacity 1-1500. rules prioritized by order.
 export interface RuleGroupProps {
-  // TODO: can/should we make this optional with default to the sum of the rules' capacity?
+  // TODO: make this optional with default to the sum of the rules' capacity
   readonly capacity: number;
   // TODO: customResponseBodies
   // readonly customResponseBodies?: CfnWebACL.CustomResponseBodyProperty[];
@@ -374,7 +411,9 @@ export interface RuleGroupProps {
   readonly rules?: Rule[];
   readonly scope: Scope;
   readonly tags?: core.Tag[];
+  // TODO: this should be optional with sane defaults
   readonly visibilityConfig: CfnWebACL.VisibilityConfigProperty;
+  // TODO
 }
 export class RuleGroup extends core.Resource {
   constructor(scope: Construct, id: string, props: RuleGroupProps) {
