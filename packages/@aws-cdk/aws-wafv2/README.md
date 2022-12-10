@@ -42,7 +42,7 @@ webAcl.attachTo(alb);
 ```
 
 Only resources with the same scope of the web ACL can be associated (i.e., CloudFront and regional resources cannot associate to the same web ACL).
-## Add Rules and Rule Groups
+## Rules and Rule Groups
 A rule defines attack patterns to look for in web requests and the action to take when a request matches the patterns. Rule groups are reusable collections of rules. You can use managed rule groups offered by AWS and AWS Marketplace sellers. You can also write your own rules and use your own rule groups.
 
 Specify rules and rule groups in the web ACL definition. Rules will be automatically prioritized by the order they are provided to the web ACL.
@@ -179,10 +179,26 @@ const ipSet = new wafv2.IPSet(this, 'IPSet', {
 });
 ```
 
+#### Configure CloudWatch Metrics
+By default, each rule will create a CloudWatch metric with a unique name matching the rule name. You can disable the metric for a rule or override the default name. For example, if you want a single metric to measure multiple rules, set the same metric name for each rule.
+
+```ts
+// Use the same CloudWatch metric for two rule groups
+export const ruleLinuxRuleSetCount = wafv2.ManagedRuleGroup.LINUX({
+  metricName: 'AWS-AWSManagedRulesLinuxRuleSet',
+});
+export const rulePosixRuleSetCount = wafv2.ManagedRuleGroup.POSIX({
+  metricName: 'AWS-AWSManagedRulesLinuxRuleSet',
+});
+
+// Disable CloudWatch metrics for this rule
+export const ruleIpReputationRuleSetCount = wafv2.ManagedRuleGroup.IP_REPUTATION({
+  enableCloudWatchMetrics: false,
+});
+```
+
 ### Set the default action for requests that don't match any rules
 By default, requests not matching any rules will be allowed without modifying the response. If desired, you can customize this action. 
-
-
 
 ```ts
 // Allow the request and add a custom header. 
@@ -208,8 +224,47 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
   ),
 });
 ```
-## Configure Metrics
-TODO: Plan VisibilityConfig: CloudWatch metrics and sampled requests
+## Request Sampling
+By default, request sampling will be enabled for all rules. Instead, you can exclude rules from sampling or disable request sampling entirely.
+
+With request sampling, you can view a sample of the requests that AWS WAF has inspected and either allowed or blocked. For each sampled request, you can view detailed data about the request, such as the originating IP address and the headers included in the request. You can also view the rules that matched the request, and the rule action settings.
+
+The sample of requests contains up to 100 requests that matched the criteria for a rule in the web ACL and another 100 requests for requests that didn't match any rules and had the web ACL default action applied. The requests in the sample come from all the protected resources that have received requests for your content in the previous three hours.
 ```ts
-// TODO
+// Only sample requests for the first rule
+const webAcl = new wafv2.WebACL(this, 'WebAcl', {
+  scope: wafv2.Scope.REGIONAL,
+  rules: [firstRule, secondRule, thirdRule],
+  requestSampling: wafv2.RequestSampling.ENABLE_WITH_EXCEPTIONS(
+    enableDefaultActionSampling: true,
+    excludedRules: [secondRule, thirdRule],
+  ),
+});
+```
+
+## Logging Web ACL Traffic
+You can enable logging to get detailed information about traffic that is analyzed by your web ACL. Logged information includes the time that AWS WAF received a web request from your AWS resource, detailed information about the request, and details about the rules that the request matched. You can send your logs to an Amazon CloudWatch Logs log group, an Amazon Simple Storage Service (Amazon S3) bucket, or an Amazon Kinesis Data Firehose.
+
+By default, blocked requests are logged and retained for one month. You can optionally customize this to:
+- Set a custom retention period
+- Configure a filter to specify which web requests are kepts in the logs and which are dropped
+- Redact fields
+
+```ts
+declare const webAcl: wafv2.WebACL;
+webAcl.setLoggingConfiguration({
+  logDestinationService: wafv2.LogDestinationService.CLOUDWATCH,
+  logSuffix: webAcl.webAclId,
+  retentionDays: logs.RetentionDays.ONE_YEAR,
+  loggingFilter: wafv2.LoggingFilterConfiguration.defaultDrop([
+        wafv2.LoggingFilter.keepIfMeetsAny([
+          wafv2.LoggingFilterCondition.action(
+            wafv2.LoggingFilterActionConditionAction.BLOCK,
+          ),
+        ]),
+      ])
+  redactedFields: [{
+      singleHeader: { "Name": "haystack" },
+    }],
+});
 ```
