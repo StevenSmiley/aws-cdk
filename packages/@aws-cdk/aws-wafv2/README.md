@@ -22,7 +22,7 @@
 
 The `@aws-cdk/aws-wafv2` package contains constructs for deploying AWS WAF web access control lists (ACLs).
 
-Here is a minimal deployable WebACL definition.
+Here is a minimal deployable WebACL definition. You must set the scope for either CloudFront or regional resources.
 ```ts
 const webAcl = new wafv2.WebACL(this, 'WebAcl', {
   scope: wafv2.Scope.REGIONAL,
@@ -45,7 +45,14 @@ Only resources with the same scope of the web ACL can be associated (i.e., Cloud
 ## Add Rules and Rule Groups
 A rule defines attack patterns to look for in web requests and the action to take when a request matches the patterns. Rule groups are reusable collections of rules. You can use managed rule groups offered by AWS and AWS Marketplace sellers. You can also write your own rules and use your own rule groups.
 
-Rules will be automatically prioritized by the order they are provided to the web ACL.
+Specify rules and rule groups in the web ACL definition. Rules will be automatically prioritized by the order they are provided to the web ACL.
+
+```ts
+const webAcl = new wafv2.WebACL(this, 'WebAcl', {
+  scope: wafv2.Scope.REGIONAL,
+  rules: [firstRule, secondRule, thirdRule],
+});
+```
 
 ### Managed rule groups
 `ManagedRuleGroup` supports rule groups managed by AWS and AWS Marketplace vendors, and allows for overriding their default configuration.
@@ -59,12 +66,12 @@ export const ruleLinuxRuleSetCount = wafv2.ManagedRuleGroup.LINUX({
   version: 'Version_1.1',
 });
 
-// Override rule group action
+// Override default action to COUNT for all rules in the rule group
 export const ruleIpReputationRuleSetCount = wafv2.ManagedRuleGroup.IP_REPUTATION({
   overrideToCount: true,
 });
 
-// Exclude a rule
+// Exclude a rule from a managed rule group
 export const ruleCommonRuleSet = wafv2.ManagedRuleGroup.CORE_RULE_SET({
   excludedRules: [{ name: 'SizeRestrictions_BODY' }],
 });
@@ -74,8 +81,8 @@ export const ruleWordpressRuleSetCount = wafv2.ManagedRuleGroup.WORDPRESS({
   scopeDownStatement: TODO,
 });
 
-// Use rule managed by a vendor from the AWS Marketplace
-// Note: You must first subscribe to this rule in the AWS Marketplace
+// Use rule group managed by a vendor from the AWS Marketplace
+// Note: You must first subscribe to this rule group in the AWS Marketplace
 export const ruleThirdParty = wafv2.ManagedRuleGroup.ThirdParty({
   vendor: 'MarketplaceSeller',
   ruleName: 'ThirdPartyRules',
