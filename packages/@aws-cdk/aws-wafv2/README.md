@@ -31,6 +31,10 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
 ## Associate with Resources
 A global web ACL can protect Amazon CloudFront distributions, and a regional web ACL can protect Application Load Balancers, Amazon API Gateway APIs, AWS AppSync GraphQL APIs and Amazon Cognito User Pools.
 
+TODO: L2 constructs for AppSync are still experimental, can we support them yet?
+
+TODO: Are we allowed to use property overrides for association with CloudFront distributions or should we create a method on `cloudfront.distribution` like `addWebAcl`?
+
 To associate with a supported resource, use the `attachTo` method:
 ```ts
 declare const alb: elbv2.ApplicationLoadBalancer;
@@ -48,31 +52,31 @@ Rules will be automatically prioritized by the order they are provided to the we
 
 ```ts
 // Accept rule group defaults
-export const ruleSqlInjectionRuleSet = ManagedRuleGroup.SQL_INJECTION();
+export const ruleSqlInjectionRuleSet = wafv2.ManagedRuleGroup.SQL_INJECTION();
 
 // Pin a specific version
-export const ruleLinuxRuleSetCount = ManagedRuleGroup.LINUX({
+export const ruleLinuxRuleSetCount = wafv2.ManagedRuleGroup.LINUX({
   version: 'Version_1.1',
 });
 
 // Override rule group action
-export const ruleIpReputationRuleSetCount = ManagedRuleGroup.IP_REPUTATION({
+export const ruleIpReputationRuleSetCount = wafv2.ManagedRuleGroup.IP_REPUTATION({
   overrideToCount: true,
 });
 
 // Exclude a rule
-export const ruleCommonRuleSet = ManagedRuleGroup.CORE_RULE_SET({
+export const ruleCommonRuleSet = wafv2.ManagedRuleGroup.CORE_RULE_SET({
   excludedRules: [{ name: 'SizeRestrictions_BODY' }],
 });
 
 // Scope-down rule to only requests that match specific criteria
-export const ruleWordpressRuleSetCount = ManagedRuleGroup.WORDPRESS({
+export const ruleWordpressRuleSetCount = wafv2.ManagedRuleGroup.WORDPRESS({
   scopeDownStatement: TODO,
 });
 
 // Use rule managed by a vendor from the AWS Marketplace
 // Note: You must first subscribe to this rule in the AWS Marketplace
-export const ruleThirdParty = ManagedRuleGroup.ThirdParty({
+export const ruleThirdParty = wafv2.ManagedRuleGroup.ThirdParty({
   vendor: 'MarketplaceSeller',
   ruleName: 'ThirdPartyRules',
 });
@@ -83,29 +87,29 @@ export const ruleThirdParty = ManagedRuleGroup.ThirdParty({
 Use a custom rule to inspect for patterns including query strings, headers, countries, and rate limit violations.
 ```ts
 // Block requests with a header exactly matching a given string
-const regularMatchOneRule = new Rule.Regular({
+const regularMatchOneRule = new wafv2.Rule.Regular({
   name: 'regularMatchOneRule',
-  action: RuleAction.block(),
-  matchLogic: MatchLogic.MATCH_ONE,
+  action: wafv2.RuleAction.block(),
+  matchLogic: wafv2.MatchLogic.MATCH_ONE,
   statements: [
-    new Statement.InspectSingleHeader(
+    new wafv2.Statement.InspectSingleHeader(
       headerFieldName: 'header',
-      matchCondition: MatchCondition.StringMatch.Exactly('stringToMatch')
+      matchCondition: wafv2.MatchCondition.StringMatch.Exactly('stringToMatch')
     ),
   ],
 });
 
 // Block requests from outside the US that don't come from an expected set of IPs
-const regularMatchAllRule = new Rule.Regular({
+const regularMatchAllRule = new wafv2.Rule.Regular({
   name: 'regularMatchAllRule',
-  action: RuleAction.block(),
-  matchLogic: MatchLogic.MATCH_ALL,
+  action: wafv2.RuleAction.block(),
+  matchLogic: wafv2.MatchLogic.MATCH_ALL,
   statements: [
-    new Statement.GeoMatch(
+    new wafv2.Statement.GeoMatch(
       negate: true,
       countryCodes: ['US']
     ),
-    new Statement.IPMatch(
+    new wafv2.Statement.IPMatch(
       negate: true,
       ipSets: [overseasOfficeIpSet],
     ),
@@ -113,27 +117,27 @@ const regularMatchAllRule = new Rule.Regular({
 });
 
 // Block requests from IPs that exceed 500 requests in five minutes
-const rateBasedRule = new Rule.RateBased({
+const rateBasedRule = new wafv2.Rule.RateBased({
   name: 'rateBasedRule',
   maximumRequestsInFiveMinutes: 500,
-  action: RuleAction.block(),
+  action: wafv2.RuleAction.block(),
 });
 
 // Allow requests from a given set of IPs
-const ipSetRule = new Rule.IPSet({
+const ipSetRule = new wafv2.Rule.IPSet({
   name: 'rateBasedRule',
   ipSets: [ipSet],
-  action: RuleAction.allow(),
+  action: wafv2.RuleAction.allow(),
 });
 ```
 
 #### Create a custom rule group
-Use a rule group to combine rules into a single logical set.
+Use a rule group to combine rules into a single logical set. Rules will be automatically prioritized by the order in which they are given.
 
 ```ts
-const ruleGroup = new RuleGroup({
-  scope: Scope.REGIONAL,
-  rules: [regularRule, rateBasedRule],
+const ruleGroup = new wafv2.RuleGroup(this, 'RuleGroup', {
+  scope: wafv2.Scope.REGIONAL,
+  rules: [rule1, rule2],
 });
 ```
 By default, the rule group capacity will be the sum of its rules, but this can be overriden if you intend to expand the rule group. After you create the rule group, you can't change the capacity.
@@ -144,8 +148,8 @@ A regex pattern set provides a collection of regular expressions that you want t
 If your regex pattern set contains more than one regex pattern, when it's used in a rule, the pattern matching is combined with OR logic. That is, a web request will match the pattern set rule statement if the request component matches any of the patterns in the set.
 
 ```ts
-const regexPatternSet = new RegexPatternSet(this, 'RegexPatternSet',{
-  scope: Scope.REGIONAL,
+const regexPatternSet = new wafv2.RegexPatternSet(this, 'RegexPatternSet',{
+  scope: wafv2.Scope.REGIONAL,
   regularExpressionList: [
     'rege(x(es)?|xps?)',
     'colou?r',
@@ -159,9 +163,9 @@ An IP set provides a collection of IP addresses and IP address ranges that you w
 To use an IP set in a web ACL or rule group, you first create an `IPSet` with your address specifications, then you reference the set when you add an IP set rule statement to a web ACL or rule group.
 
 ```ts
-const ipSet = new IPSet(this, 'IPSet', {
-  scope: Scope.REGIONAL,
-  ipAddressVersion: IPAddressVersion.IPV4,
+const ipSet = new wafv2.IPSet(this, 'IPSet', {
+  scope: wafv2.Scope.REGIONAL,
+  ipAddressVersion: wafv2.IPAddressVersion.IPV4,
   addresses: [
     '10.0.0.0/32',
   ],
@@ -175,10 +179,10 @@ By default, requests not matching any rules will be allowed without modifying th
 
 ```ts
 // Allow the request and add a custom header. 
-// AWS WAF prefixes your custom header names with `x-amzn-waf-` when it inserts them.
+// AWS WAF prefixes custom header names with `x-amzn-waf-` when it inserts them.
 const webAcl = new wafv2.WebACL(this, 'WebAcl', {
   scope: wafv2.Scope.REGIONAL,
-  defaultAction: DefaultAction.allow(
+  defaultAction: wafv2.DefaultAction.allow(
     customRequestHandling: {
       // TODO
     },
@@ -190,7 +194,7 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
 // Block the request and send a custom response to the web request.
 const webAcl = new wafv2.WebACL(this, 'WebAcl', {
   scope: wafv2.Scope.REGIONAL,
-  defaultAction: DefaultAction.block(
+  defaultAction: wafv2.DefaultAction.block(
     customResponse: {
       // TODO
     },
