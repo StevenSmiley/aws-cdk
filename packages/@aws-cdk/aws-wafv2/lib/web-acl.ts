@@ -82,6 +82,15 @@ export interface WebACLProps {
    * @default - The immunity time for successful CAPTCHA challenges is 300 seconds.
    */
   readonly captchaConfig?: CfnWebACL.CaptchaConfigProperty;
+  /**
+   * Specifies the domains that AWS WAF should accept in a web request token.
+   * This enables the use of tokens across multiple protected websites. When AWS WAF provides a token, it uses the domain
+   * of the AWS resource that the web ACL is protecting. With a token domain list, AWS WAF accepts the resource's host domain
+   * plus all domains in the token domain list, including their prefixed subdomains.
+   *
+   * @default AWS WAF accepts tokens only for the domain of the protected resource.
+   */
+  readonly tokenDomains?: string[];
 }
 
 /**
@@ -159,6 +168,9 @@ export class WebACL extends core.Resource {
       // TODO: customResponseBodies must come from the rules
       // customResponseBodies: props.customResponseBodies,
     });
+    if (props.tokenDomains) {
+      resource.addPropertyOverride('TokenDomains', props.tokenDomains);
+    }
 
     this.webAclName = this.getResourceNameAttribute(resource.ref);
     this.webAclArn = this.getResourceArnAttribute(resource.attrArn, {
