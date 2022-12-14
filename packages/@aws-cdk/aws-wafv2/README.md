@@ -31,9 +31,9 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
 ## Associate with Resources
 A global web ACL can protect Amazon CloudFront distributions, and a regional web ACL can protect Application Load Balancers, Amazon API Gateway APIs, AWS AppSync GraphQL APIs and Amazon Cognito User Pools.
 
-TODO: L2 constructs for AppSync are still experimental, can we support them yet?
+TODO: Seek feedback on RFC: L2 constructs for AppSync are still experimental, can we support them yet?
 
-TODO: Are we allowed to use property overrides for association with CloudFront distributions or should we create a method on `cloudfront.distribution` like `addWebAcl`?
+TODO: Seek feedback on RFC: Is it preferred to use property overrides for association with CloudFront distributions or should we create a method on `cloudfront.distribution` like `addWebAcl`?
 
 To associate with a supported resource, use the `attachTo` method:
 ```ts
