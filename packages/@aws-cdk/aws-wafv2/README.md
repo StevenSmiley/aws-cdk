@@ -78,7 +78,14 @@ export const ruleCommonRuleSet = wafv2.ManagedRuleGroup.CORE_RULE_SET({
 
 // Scope-down rule to only requests that match specific criteria
 export const ruleWordpressRuleSetCount = wafv2.ManagedRuleGroup.WORDPRESS({
-  scopeDownStatement: TODO,
+  scopeDownStatement: {
+    matchLogic: wafv2.MatchLogic.MATCH_NONE,
+    statements: [
+      new wafv2.Statement.GeoMatch(
+        countryCodes: ['US']
+      ),
+    ],
+  },
 });
 
 // Use rule group managed by a vendor from the AWS Marketplace
