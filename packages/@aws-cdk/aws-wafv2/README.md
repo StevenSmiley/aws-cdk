@@ -113,7 +113,24 @@ const regularMatchOneRule = new wafv2.Rule.Regular({
   ],
 });
 
-// Block requests from outside the US that don't come from an expected set of IPs
+// Block requests from IPs that exceed 500 requests in five minutes
+const rateBasedRule = new wafv2.Rule.RateBased({
+  name: 'rateBasedRule',
+  maximumRequestsInFiveMinutes: 500,
+  action: wafv2.RuleAction.block(),
+});
+
+// Allow requests from a given set of IPs and label them
+const allowFromOverseasOffice = new wafv2.Rule.IPSet({
+  name: 'AllowFromOverseasOffice',
+  ipSets: [OverseasOfficeIPSet],
+  action: wafv2.RuleAction.allow(),
+  addLabels: [
+    'trusted:ip',
+  ],
+});
+
+// Block requests from outside the US that don't have a label indicating they are trusted
 const regularMatchAllRule = new wafv2.Rule.Regular({
   name: 'regularMatchAllRule',
   action: wafv2.RuleAction.block(),
@@ -123,25 +140,12 @@ const regularMatchAllRule = new wafv2.Rule.Regular({
       negate: true,
       countryCodes: ['US']
     ),
-    new wafv2.Statement.IPMatch(
+    new wafv2.Statement.LabelMatch(
       negate: true,
-      ipSets: [overseasOfficeIpSet],
+      matchScope: wafv2.LabelMatchScope.LABEL,
+      matchKey: 'trusted:ip',
     ),
   ],
-});
-
-// Block requests from IPs that exceed 500 requests in five minutes
-const rateBasedRule = new wafv2.Rule.RateBased({
-  name: 'rateBasedRule',
-  maximumRequestsInFiveMinutes: 500,
-  action: wafv2.RuleAction.block(),
-});
-
-// Allow requests from a given set of IPs
-const ipSetRule = new wafv2.Rule.IPSet({
-  name: 'rateBasedRule',
-  ipSets: [ipSet],
-  action: wafv2.RuleAction.allow(),
 });
 ```
 

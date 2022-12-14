@@ -156,8 +156,8 @@ export class WebACL extends core.Resource {
       name: props.webAclName,
       rules: prioritizedRules,
       captchaConfig: props.captchaConfig,
+      // TODO: customResponseBodies must come from the rules
       // customResponseBodies: props.customResponseBodies,
-      
     });
 
     this.webAclName = this.getResourceNameAttribute(resource.ref);
