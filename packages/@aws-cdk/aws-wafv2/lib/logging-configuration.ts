@@ -105,6 +105,9 @@ export class LoggingConfiguration extends core.Resource {
           LoggingFilterCondition.action(
             LoggingFilterActionConditionAction.BLOCK,
           ),
+          LoggingFilterCondition.action(
+            LoggingFilterActionConditionAction.COUNT,
+          ),
         ]),
       ]);
 

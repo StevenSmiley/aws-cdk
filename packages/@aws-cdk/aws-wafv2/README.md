@@ -245,7 +245,7 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
 ## Logging Web ACL Traffic
 You can enable logging to get detailed information about traffic that is analyzed by your web ACL. Logged information includes the time that AWS WAF received a web request from your AWS resource, detailed information about the request, and details about the rules that the request matched. You can send your logs to an Amazon CloudWatch Logs log group, an Amazon Simple Storage Service (Amazon S3) bucket, or an Amazon Kinesis Data Firehose.
 
-By default, blocked requests are logged and retained for one month. You can optionally customize this to:
+By default, blocked and counted requests are logged and retained for one month. You can optionally customize this to:
 - Set a custom retention period
 - Configure a filter to specify which web requests are kepts in the logs and which are dropped
 - Redact fields
@@ -260,6 +260,9 @@ webAcl.setLoggingConfiguration({
         wafv2.LoggingFilter.keepIfMeetsAny([
           wafv2.LoggingFilterCondition.action(
             wafv2.LoggingFilterActionConditionAction.BLOCK,
+          ),
+          wafv2.LoggingFilterCondition.action(
+            wafv2.LoggingFilterActionConditionAction.COUNT,
           ),
         ]),
       ])
