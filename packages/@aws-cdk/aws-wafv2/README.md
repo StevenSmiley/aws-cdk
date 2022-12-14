@@ -228,7 +228,7 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
     responseCode: 418,
     addCustomHeaders: [ {rule: 'default' } ],
     responseBody: {
-      contentType: 'TEXT_PLAIN',
+      contentType: wafv2.CustomResponseBodyContentType.TEXT_PLAIN,
       content: 'I am a teapot.',
     },
   ),
