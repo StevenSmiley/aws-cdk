@@ -82,7 +82,6 @@ export interface WebACLProps {
    * @default - The immunity time for successful CAPTCHA challenges is 300 seconds.
    */
   readonly captchaConfig?: CfnWebACL.CaptchaConfigProperty;
-  // readonly customResponseBodies?: any;
 }
 
 /**
@@ -158,6 +157,7 @@ export class WebACL extends core.Resource {
       rules: prioritizedRules,
       captchaConfig: props.captchaConfig,
       // customResponseBodies: props.customResponseBodies,
+      
     });
 
     this.webAclName = this.getResourceNameAttribute(resource.ref);
