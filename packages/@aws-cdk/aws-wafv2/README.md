@@ -29,9 +29,7 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
 });
 ```
 ## Associate with Resources
-A global web ACL can protect Amazon CloudFront distributions, and a regional web ACL can protect Application Load Balancers, Amazon API Gateway APIs, AWS AppSync GraphQL APIs and Amazon Cognito User Pools.
-
-TODO: Seek feedback on RFC: L2 constructs for AppSync are still experimental, can we support them yet?
+A global web ACL can protect Amazon CloudFront distributions, and a regional web ACL can protect Application Load Balancers, Amazon API Gateway APIs, AWS AppSync GraphQL APIs and Amazon Cognito User Pools. Only resources with the same scope of the web ACL can be associated (i.e., CloudFront and regional resources cannot associate to the same web ACL).
 
 TODO: Seek feedback on RFC: Is it preferred to use property overrides for association with CloudFront distributions or should we create a method on `cloudfront.distribution` like `addWebAcl`?
 
@@ -40,8 +38,6 @@ To associate with a supported resource, use the `attachTo` method:
 declare const alb: elbv2.ApplicationLoadBalancer;
 webAcl.attachTo(alb);
 ```
-
-Only resources with the same scope of the web ACL can be associated (i.e., CloudFront and regional resources cannot associate to the same web ACL).
 ## Rules and Rule Groups
 A rule defines attack patterns to look for in web requests and the action to take when a request matches the patterns. Rule groups are reusable collections of rules. You can use managed rule groups offered by AWS and AWS Marketplace sellers. You can also write your own rules and use your own rule groups.
 
@@ -55,7 +51,7 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
 ```
 
 ### Managed rule groups
-`ManagedRuleGroup` supports rule groups managed by AWS and AWS Marketplace vendors, and allows for overriding their default configuration.
+`ManagedRuleGroup` provides rule groups managed by AWS and AWS Marketplace vendors, and allows for overriding their default configuration.
 
 ```ts
 // Accept rule group defaults
@@ -153,6 +149,8 @@ const regularMatchAllRule = new wafv2.Rule.Regular({
 Use a rule group to combine rules into a single logical set. Rules will be automatically prioritized by the order in which they are given.
 
 ```ts
+declare const rule1: wafv2.Rule;
+declare const rule2: wafv2.Rule;
 const ruleGroup = new wafv2.RuleGroup(this, 'RuleGroup', {
   scope: wafv2.Scope.REGIONAL,
   rules: [rule1, rule2],
@@ -161,7 +159,7 @@ const ruleGroup = new wafv2.RuleGroup(this, 'RuleGroup', {
 By default, the rule group capacity will be the sum of its rules, but this can be overriden if you intend to expand the rule group. After you create the rule group, you can't change the capacity.
 
 #### Create a regex pattern set
-A regex pattern set provides a collection of regular expressions that you want to use together in a rule statement. You can reference the set when you add a regex pattern set rule statement to a web ACL or rule group. A regex pattern set must contain at least one regex pattern.
+A regex pattern set is an AWS resource that provides a collection of regular expressions that you want to use together in a rule statement. You can reference the set when you add a regex pattern set rule statement to a web ACL or rule group. A regex pattern set must contain at least one regex pattern.
 
 If your regex pattern set contains more than one regex pattern, when it's used in a rule, the pattern matching is combined with OR logic. That is, a web request will match the pattern set rule statement if the request component matches any of the patterns in the set.
 
@@ -176,9 +174,7 @@ const regexPatternSet = new wafv2.RegexPatternSet(this, 'RegexPatternSet',{
 ```
 
 #### Create an IP Set
-An IP set provides a collection of IP addresses and IP address ranges that you want to use together in a rule statement. IP sets are AWS resources.
-
-To use an IP set in a web ACL or rule group, you first create an `IPSet` with your address specifications, then you reference the set when you add an IP set rule statement to a web ACL or rule group.
+An IP set provides a collection of IP addresses and IP address ranges that you want to use together in a rule statement. IP sets are AWS resources. To use an IP set in a web ACL or rule group, you first create an `IPSet` with your address specifications, then you reference the set when you add an IP set rule statement to a web ACL or rule group.
 
 ```ts
 const ipSet = new wafv2.IPSet(this, 'IPSet', {
@@ -209,7 +205,7 @@ export const ruleIpReputationRuleSetCount = wafv2.ManagedRuleGroup.IP_REPUTATION
 ```
 
 ### Set the default action for requests that don't match any rules
-By default, requests not matching any rules will be allowed without modifying the response. If desired, you can customize this action. 
+By default, requests not matching any rules will be allowed without modifying the response. If desired, you can customize this action. When allowing requests, you can add custom headers. When blocking requests, you can return a custom response code, response body, and add custom headers.
 
 ```ts
 // Allow the request and add a custom header. 
@@ -266,15 +262,15 @@ By default, blocked and counted requests are logged and retained for one month. 
 
 ```ts
 // Send logs to a new CloudWatch Logs group and override default retention
-declare const webAcl: wafv2.WebACL;
 webAcl.setLoggingConfiguration({
   logDestinationService: wafv2.LogDestinationService.CLOUDWATCH,
   logSuffix: webAcl.webAclId,
   retentionDays: logs.RetentionDays.ONE_YEAR,
 });
-
+```
+```ts
 // Send logs to an S3 bucket that will persist across deployments, customize filter and redacted fields
-let bucket: s3.Bucket;
+declare const bucket: s3.Bucket;
 webAcl.setLoggingConfiguration({
   logDestination: bucket,
   loggingFilter: wafv2.LoggingFilterConfiguration.defaultDrop([
@@ -288,7 +284,7 @@ webAcl.setLoggingConfiguration({
       ]),
     ])
   redactedFields: [{
-      singleHeader: { "Name": "haystack" },
-    }],
+    singleHeader: { "Name": "haystack" },
+  }],
 });
 ```
