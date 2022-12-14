@@ -290,5 +290,5 @@ webAcl.setLoggingConfiguration({
   redactedFields: [{
       singleHeader: { "Name": "haystack" },
     }],
-})
+});
 ```
