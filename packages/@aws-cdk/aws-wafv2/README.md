@@ -213,9 +213,9 @@ By default, requests not matching any rules will be allowed without modifying th
 const webAcl = new wafv2.WebACL(this, 'WebAcl', {
   scope: wafv2.Scope.REGIONAL,
   defaultAction: wafv2.DefaultAction.allow(
-    customRequestHandling: {
-      // TODO
-    },
+    addCustomHeaders: [
+      { rule: 'default' },
+    ]
   ),
 });
 ```
@@ -225,8 +225,11 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
 const webAcl = new wafv2.WebACL(this, 'WebAcl', {
   scope: wafv2.Scope.REGIONAL,
   defaultAction: wafv2.DefaultAction.block(
-    customResponse: {
-      // TODO
+    responseCode: 418,
+    addCustomHeaders: [ {rule: 'default' } ],
+    responseBody: {
+      contentType: 'TEXT_PLAIN',
+      content: 'I am a teapot.',
     },
   ),
 });
