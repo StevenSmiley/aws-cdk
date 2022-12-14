@@ -243,7 +243,7 @@ const webAcl = new wafv2.WebACL(this, 'WebAcl', {
 ```
 
 ## Logging Web ACL Traffic
-You can enable logging to get detailed information about traffic that is analyzed by your web ACL. Logged information includes the time that AWS WAF received a web request from your AWS resource, detailed information about the request, and details about the rules that the request matched. You can send your logs to an Amazon CloudWatch Logs log group, an Amazon Simple Storage Service (Amazon S3) bucket, or an Amazon Kinesis Data Firehose.
+You can enable logging to get detailed information about traffic that is analyzed by your web ACL. Logged information includes the time that AWS WAF received a web request from your AWS resource, detailed information about the request, and details about the rules that the request matched. You can send your logs to an Amazon CloudWatch Logs log group, an Amazon Simple Storage Service (Amazon S3) bucket, or an Amazon Kinesis Data Firehose. You can provide an existing log destination or one will be created automatically.
 
 By default, blocked and counted requests are logged and retained for one month. You can optionally customize this to:
 - Set a custom retention period
@@ -251,23 +251,30 @@ By default, blocked and counted requests are logged and retained for one month. 
 - Redact fields
 
 ```ts
+// Send logs to a new CloudWatch Logs group and override default retention
 declare const webAcl: wafv2.WebACL;
 webAcl.setLoggingConfiguration({
   logDestinationService: wafv2.LogDestinationService.CLOUDWATCH,
   logSuffix: webAcl.webAclId,
   retentionDays: logs.RetentionDays.ONE_YEAR,
+});
+
+// Send logs to an S3 bucket that will persist across deployments, customize filter and redacted fields
+let bucket: s3.Bucket;
+webAcl.setLoggingConfiguration({
+  logDestination: bucket,
   loggingFilter: wafv2.LoggingFilterConfiguration.defaultDrop([
-        wafv2.LoggingFilter.keepIfMeetsAny([
-          wafv2.LoggingFilterCondition.action(
-            wafv2.LoggingFilterActionConditionAction.BLOCK,
-          ),
-          wafv2.LoggingFilterCondition.action(
-            wafv2.LoggingFilterActionConditionAction.COUNT,
-          ),
-        ]),
-      ])
+      wafv2.LoggingFilter.keepIfMeetsAny([
+        wafv2.LoggingFilterCondition.action(
+          wafv2.LoggingFilterActionConditionAction.BLOCK,
+        ),
+        wafv2.LoggingFilterCondition.action(
+          wafv2.LoggingFilterActionConditionAction.COUNT,
+        ),
+      ]),
+    ])
   redactedFields: [{
       singleHeader: { "Name": "haystack" },
     }],
-});
+})
 ```
