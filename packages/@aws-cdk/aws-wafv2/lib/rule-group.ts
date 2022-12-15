@@ -317,6 +317,9 @@ export class ManagedRuleGroup {
     });
   }
 
+  /**
+   * TODO
+   */
   public static thirdParty(props: ManagedRuleGroupThirdPartyProps): ManagedRuleGroup {
     const overrideAction = props.overrideToCount ? { count: {} } : { none: {} };
     const thirdPartyRuleGroup = {
@@ -424,6 +427,9 @@ export interface RuleGroupProps {
   readonly visibilityConfig: CfnWebACL.VisibilityConfigProperty;
   // TODO
 }
+/**
+ * TODO
+ */
 export class RuleGroup extends core.Resource {
   constructor(scope: Construct, id: string, props: RuleGroupProps) {
     super(scope, id);
@@ -440,6 +446,10 @@ export class RuleGroup extends core.Resource {
     });
   }
 }
+
+/**
+ * TODO
+ */
 export interface RuleProps {
   readonly name: string;
   readonly action: RuleAction;
@@ -452,20 +462,32 @@ export interface RuleProps {
   readonly labels?: any[];
 }
 
+/**
+ * TODO
+ */
 export class Rule {
   // TODO: Make sure if you get MatchLogic=MATCH_ONE that you one get one statement
   // TODO: Set the return type of each method to CfnWebACL.RuleProperty, once implemented
+  /**
+   * TODO
+   */
   public static rateBased() {
     // TODO
     return;
   }
 
+  /**
+   * TODO
+   */
   public static regular() {
     // TODO
     return;
   }
 }
 
+/**
+ * TODO
+ */
 export enum MatchLogic {
   MATCH_ONE = 'MATCH_ONE',
   MATCH_ALL = 'MATCH_ALL',
@@ -473,59 +495,107 @@ export enum MatchLogic {
   MATCH_NONE = 'MATCH_NONE',
 }
 
+/**
+ * TODO
+ */
 export class MatchCondition {
+  /**
+   * TODO
+   */
   public stringMatch() {
     return;
   }
+
+  /**
+   * TODO
+   */
   public stringPatternMatch() {
     return;
   }
+
+  /**
+   * TODO
+   */
   public sizeMatch() {
     return;
   }
+
+  /**
+   * TODO
+   */
   public attackMatch() {
     return;
   }
 }
 
+/**
+ * TODO
+ */
 export interface InspectSingleHeaderProps extends StatementProps {
   readonly headerFieldName: string;
   readonly matchCondition: MatchCondition;
 }
 
+/**
+ * TODO
+ */
 export interface InspectSingleQueryParameterProps extends StatementProps {
   readonly queryArgument: string;
   readonly matchCondition: MatchCondition;
 }
 
+/**
+ * TODO
+ */
 export interface InspectURIPathProps extends StatementProps {
   readonly matchCondition: MatchCondition;
 }
 
+/**
+ * TODO
+ */
 export interface InspectQueryStringProps extends StatementProps {
   readonly matchCondition: MatchCondition;
 }
 
+/**
+ * TODO
+ */
 export interface InspectHTTPMethodProps extends StatementProps {
   readonly matchCondition: MatchCondition;
 }
 
+/**
+ * TODO
+ */
 export interface GeoMatchProps extends StatementProps {
   readonly countryCodes: string[]; // TODO: Can we provide an enum for this?
   readonly forwardedIpConfiguration?: ForwardedIPConfiguration;
 }
 
+/**
+ * TODO
+ */
 export interface ForwardedIPConfiguration {
   readonly fallbackBehavior: 'MATCH' | 'NO_MATCH'; // TODO: Enum?
   readonly headerName: string;
 };
 
+/**
+ * TODO
+ */
 export interface StatementProps {
   readonly negate?: boolean;
   readonly textTransformations?: any[]; // TODO: better type
 }
 
+/**
+ * TODO
+ */
 export class Statement {
+  /**
+   * TODO
+   */
   public static geoMatch(props: GeoMatchProps): Statement {
     const geoMatchStatement = {
       GeoMatchStatement: {
@@ -535,54 +605,98 @@ export class Statement {
     };
     return geoMatchStatement;
   }
+
+  /**
+   * TODO
+   */
   public static ipMatch() {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static labelMatch() {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static inspectSingleHeader(
     // props: InspectSingleHeaderProps,
   ) {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static inspectAllHeaders() {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static inspectCookies() {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static inspectSingleQueryParameter(
     // props: InspectSingleQueryParameterProps,
   ) {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static inspectAllQueryParameters() {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static inspectURIPath(
     // props: InspectURIPathProps,
   ) {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static inspectQueryString(
     // props: InspectQueryStringProps,
   ) {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static inspectBody() {
     // TODO: specify return type as Statement
     return;
   }
+
+  /**
+   * TODO
+   */
   public static inspectHTTPMethod(
     // props: InspectHTTPMethodProps,
   ) {
