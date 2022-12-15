@@ -4,6 +4,15 @@ import { CfnRuleGroup, CfnWebACL } from './wafv2.generated';
 import { Scope } from './web-acl';
 
 /**
+ * The type of content in the payload that you are defining in the Content string.
+ */
+export enum CustomResponseBodyContentType {
+  TEXT_PLAIN = 'TEXT_PLAIN',
+  HTML = 'TEXT_HTML',
+  JSON = 'APPLICATION_JSON',
+}
+
+/**
  * The action to perform if a rule matches.
  */
 export class RuleAction {
@@ -446,10 +455,12 @@ export interface RuleProps {
 export class Rule {
   // TODO: Make sure if you get MatchLogic=MATCH_ONE that you one get one statement
   public static RateBased(): CfnWebACL.RuleProperty {
+    // TODO
     return {};
   }
 
   public static Regular(): CfnWebACL.RuleProperty {
+    // TODO
     return {};
   }
 }
@@ -524,38 +535,49 @@ export class Statement {
     return geoMatchStatement;
   }
   public static IPMatch() {
+    // TODO
     return;
   }
   public static LabelMatch() {
+    // TODO
     return;
   }
   public static InspectSingleHeader(props: InspectSingleHeaderProps) {
+    // TODO
     return;
   }
   public static InspectAllHeaders() {
+    // TODO
     return;
   }
   public static InspectCookies() {
+    // TODO
     return;
   }
   public static InspectSingleQueryParameter(
     props: InspectSingleQueryParameterProps,
   ) {
+    // TODO
     return;
   }
   public static InspectAllQueryParameters() {
+    // TODO
     return;
   }
   public static InspectURIPath(props: InspectURIPathProps) {
+    // TODO
     return;
   }
   public static InspectQueryString(props: InspectQueryStringProps) {
+    // TODO
     return;
   }
   public static InspectBody() {
+    // TODO
     return;
   }
   public static InspectHTTPMethod(props: InspectHTTPMethodProps) {
+    // TODO
     return;
   }
 }
