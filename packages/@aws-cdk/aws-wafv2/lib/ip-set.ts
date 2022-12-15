@@ -4,7 +4,7 @@ import { CfnIPSet } from './wafv2.generated';
 import { Scope } from './web-acl';
 
 // TODO: Annotations
-enum IPAddressVersion {
+export enum IPAddressVersion {
   IPV4 = 'IPV4',
   IPV6 = 'IPV6',
 }
