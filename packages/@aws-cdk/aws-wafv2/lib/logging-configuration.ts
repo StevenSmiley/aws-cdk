@@ -71,7 +71,7 @@ export interface LogDestinationConfig {
    *
    * @default One month
    */
-  readonly retention?: logs.RetentionDays;
+  readonly retentionPeriod?: logs.RetentionDays;
 }
 
 /**
@@ -143,7 +143,7 @@ export class LoggingConfiguration extends core.Resource {
           encryption: s3.BucketEncryption.S3_MANAGED,
           lifecycleRules: [
             {
-              expiration: core.Duration.days(props.logDestinationConfig.retention || 30),
+              expiration: core.Duration.days(props.logDestinationConfig.retentionPeriod || 30),
               enabled: true,
             },
           ],
@@ -198,7 +198,7 @@ export class LoggingConfiguration extends core.Resource {
       case LogDestinationService.CLOUDWATCH:
         // By default, retain logs for one month
         const retentionDays =
-          props.logDestinationConfig.retention || logs.RetentionDays.ONE_MONTH;
+          props.logDestinationConfig.retentionPeriod || logs.RetentionDays.ONE_MONTH;
 
         // By default, retain the log group when the web ACL is deleted
         const removalPolicy =
@@ -220,7 +220,7 @@ export class LoggingConfiguration extends core.Resource {
       case LogDestinationService.KINESIS:
         // Create a kinesis stream
         const kinesisStream = new kinesis.Stream(this, 'Stream', {
-          retentionPeriod: core.Duration.days(props.logDestinationConfig.retention || 30),
+          retentionPeriod: core.Duration.days(props.logDestinationConfig.retentionPeriod || 30),
         });
         this.logDestinationArn = kinesisStream.streamArn;
         break;
