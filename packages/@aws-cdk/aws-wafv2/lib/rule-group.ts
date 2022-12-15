@@ -102,14 +102,14 @@ export interface ManagedRuleGroupProps {
   readonly managedRuleGroupConfigs?: CfnWebACL.ManagedRuleGroupConfigProperty[];
 }
 
-interface ManagedRuleGroupAWSProps extends ManagedRuleGroupProps {
+export interface ManagedRuleGroupAWSProps extends ManagedRuleGroupProps {
   /**
    * The name of the managed rule group.
    */
   readonly rule: string;
 }
 
-interface ManagedRuleGroupThirdPartyProps extends ManagedRuleGroupProps {
+export interface ManagedRuleGroupThirdPartyProps extends ManagedRuleGroupProps {
   /**
    * The name of the managed rule group vendor.
    */
@@ -317,9 +317,9 @@ export class ManagedRuleGroup {
     });
   }
 
-  public static ThirdParty(props: ManagedRuleGroupThirdPartyProps) {
+  public static ThirdParty(props: ManagedRuleGroupThirdPartyProps): ManagedRuleGroup {
     const overrideAction = props.overrideToCount ? { count: {} } : { none: {} };
-    const thirdPartyRule = {
+    const thirdPartyRuleGroup = {
       name: props.name || `${props.vendor}-${props.ruleName}`,
       statement: {
         managedRuleGroupStatement: {
@@ -334,10 +334,10 @@ export class ManagedRuleGroup {
       },
       overrideAction: overrideAction,
     };
-    return thirdPartyRule;
+    return thirdPartyRuleGroup;
   }
 
-  private static AWS(props: ManagedRuleGroupAWSProps) {
+  private static AWS(props: ManagedRuleGroupAWSProps): ManagedRuleGroup {
     const overrideAction = props.overrideToCount ? { count: {} } : { none: {} };
     const awsManagedRuleGroup = {
       name: props.name || props.rule,
