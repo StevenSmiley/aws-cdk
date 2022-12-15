@@ -457,16 +457,16 @@ export class Rule {
   // TODO: Set the return type of each method to CfnWebACL.RuleProperty, once implemented
   public static RateBased() {
     // TODO
-    return {};
+    return;
   }
 
   public static Regular() {
     // TODO
-    return {};
+    return;
   }
 }
 
-enum MatchLogic {
+export enum MatchLogic {
   MATCH_ONE = 'MATCH_ONE',
   MATCH_ALL = 'MATCH_ALL',
   MATCH_ANY = 'MATCH_ANY',
@@ -526,7 +526,7 @@ interface StatementProps {
 }
 
 export class Statement {
-  public static GeoMatch(props: GeoMatchProps) {
+  public static GeoMatch(props: GeoMatchProps): Statement {
     const geoMatchStatement = {
       GeoMatchStatement: {
         CountryCodes: props.countryCodes,
@@ -536,57 +536,57 @@ export class Statement {
     return geoMatchStatement;
   }
   public static IPMatch() {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static LabelMatch() {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static InspectSingleHeader(
     // props: InspectSingleHeaderProps,
   ) {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static InspectAllHeaders() {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static InspectCookies() {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static InspectSingleQueryParameter(
     // props: InspectSingleQueryParameterProps,
   ) {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static InspectAllQueryParameters() {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static InspectURIPath(
     // props: InspectURIPathProps,
   ) {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static InspectQueryString(
     // props: InspectQueryStringProps,
   ) {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static InspectBody() {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
   public static InspectHTTPMethod(
     // props: InspectHTTPMethodProps,
   ) {
-    // TODO
+    // TODO: specify return type as Statement
     return;
   }
 }
