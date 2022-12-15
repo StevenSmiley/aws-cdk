@@ -60,7 +60,7 @@ export const ruleLinuxRuleSetCount = wafv2.ManagedRuleGroup.LINUX({
   version: 'Version_1.1',
 });
 
-// Override default action to COUNT for all rules in the rule group
+// Override rule group action to COUNT
 export const ruleIpReputationRuleSetCount = wafv2.ManagedRuleGroup.IP_REPUTATION({
   overrideToCount: true,
 });
@@ -243,7 +243,7 @@ The sample of requests contains up to 100 requests that matched the criteria for
 const webAcl = new wafv2.WebACL(this, 'WebAcl', {
   scope: wafv2.Scope.REGIONAL,
   rules: [firstRule, secondRule, thirdRule],
-  requestSampling: wafv2.RequestSampling.ENABLE_WITH_EXCEPTIONS(
+  requestSampling: wafv2.RequestSampling.ENABLE_WITH_EXCLUSIONS(
     enableDefaultActionSampling: true,
     excludedRules: [secondRule, thirdRule],
   ),
