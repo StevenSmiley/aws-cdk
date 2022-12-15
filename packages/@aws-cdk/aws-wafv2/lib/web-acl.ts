@@ -68,7 +68,7 @@ export interface WebACLProps {
   /**
    * Defines and enables Amazon CloudWatch metrics and web request sample collection.
    */
-  readonly visibilityConfig: CfnWebACL.VisibilityConfigProperty;
+  readonly visibilityConfig?: CfnWebACL.VisibilityConfigProperty;
   /**
    * The rule statements used to identify the web requests that you want to allow, block, or count.
    * Each rule includes one top-level statement that AWS WAF uses to identify matching web requests,
@@ -144,12 +144,8 @@ export class WebACL extends core.Resource {
    * The action to perform if none of the Rules contained in the WebACL match.
    */
   public readonly defaultAction: DefaultAction;
-  /**
-   * The logging configuration for this web ACL.
-   *
-   * You can define one logging destination per web ACL.
-   */
-  public loggingConfiguration?: LoggingConfiguration;
+  // TODO: Request sampling
+  public requestSampling?: any;
   constructor(scope: Construct, id: string, props: WebACLProps) {
     super(scope, id);
 
@@ -157,10 +153,17 @@ export class WebACL extends core.Resource {
 
     const prioritizedRules = this.prioritizeRules(props.rules);
 
+    // TODO: generate this based on input parameters
+    const visibilityConfig: CfnWebACL.VisibilityConfigProperty = {
+      cloudWatchMetricsEnabled: true,
+      metricName: 'WAF-Default',
+      sampledRequestsEnabled: true,
+    };
+
     const resource = new CfnWebACL(this, 'Resource', {
       scope: props.scope,
       defaultAction: this.defaultAction,
-      visibilityConfig: props.visibilityConfig,
+      visibilityConfig: visibilityConfig,
       description: props.description,
       name: props.webAclName,
       rules: prioritizedRules,
@@ -194,7 +197,7 @@ export class WebACL extends core.Resource {
     loggingFilterConfiguration?: LoggingFilterConfiguration,
     redactedFields?: any,
   ) {
-    this.loggingConfiguration = new LoggingConfiguration(
+    new LoggingConfiguration(
       this,
       'LoggingConfiguration',
       {
