@@ -132,8 +132,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-ip-rep.html#aws-managed-rule-groups-ip-rep-amazon
    */
-  public static IP_REPUTATION(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static ipReputation(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesAmazonIpReputationList',
       ...props,
     });
@@ -146,8 +146,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-baseline.html#aws-managed-rule-groups-baseline-admin
    */
-  public static ADMIN_PROTECTION(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static adminProtection(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesAdminProtectionRuleSet',
       ...props,
     });
@@ -159,8 +159,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-baseline.html#aws-managed-rule-groups-baseline-known-bad-inputs
    */
-  public static KNOWN_BAD_INPUTS(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static knownBadInputs(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesKnownBadInputsRuleSet',
       ...props,
     });
@@ -174,8 +174,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-baseline.html#aws-managed-rule-groups-baseline-crs
    */
-  public static CORE_RULE_SET(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static coreRuleSet(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesCommonRuleSet',
       ...props,
     });
@@ -188,8 +188,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-use-case.html#aws-managed-rule-groups-use-case-sql-db
    */
-  public static SQL_INJECTION(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static sqlInjection(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesSQLiRuleSet',
       ...props,
     });
@@ -204,8 +204,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-use-case.html#aws-managed-rule-groups-use-case-linux-os
    */
-  public static LINUX(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static linux(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesLinuxRuleSet',
       ...props,
     });
@@ -220,8 +220,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-use-case.html#aws-managed-rule-groups-use-case-linux-os
    */
-  public static POSIX(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static posix(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesUnixRuleSet',
       ...props,
     });
@@ -235,8 +235,8 @@ export class ManagedRuleGroup {
    * Evaluate this rule group if any part of your application runs on a Windows operating system.
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-use-case.html#aws-managed-rule-groups-use-case-windows-os
    */
-  public static WINDOWS(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static windows(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesWindowsRuleSet',
       ...props,
     });
@@ -249,8 +249,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-use-case.html#aws-managed-rule-groups-use-case-wordpress-app
    */
-  public static WORDPRESS(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static wordpress(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesWordPressRuleSet',
       ...props,
     });
@@ -264,8 +264,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-use-case.html#aws-managed-rule-groups-use-case-php-app
    */
-  public static PHP(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static php(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesPHPRuleSet',
       ...props,
     });
@@ -278,8 +278,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-ip-rep.html#aws-managed-rule-groups-ip-rep-anonymous
    */
-  public static ANONYMOUS_IP(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static anonymousIp(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesAnonymousIpList',
       ...props,
     });
@@ -292,8 +292,8 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-bot.html
    */
-  public static BOT_CONTROL(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static botControl(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesBotControlRuleSet',
       ...props,
     });
@@ -310,14 +310,14 @@ export class ManagedRuleGroup {
    *
    * @see https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-atp.html
    */
-  public static ACCOUNT_TAKEOVER(props?: ManagedRuleGroupProps) {
-    return this.AWS({
+  public static accountTakeover(props?: ManagedRuleGroupProps) {
+    return this.aws({
       rule: 'AWSManagedRulesATPRuleSet',
       ...props,
     });
   }
 
-  public static ThirdParty(props: ManagedRuleGroupThirdPartyProps): ManagedRuleGroup {
+  public static thirdParty(props: ManagedRuleGroupThirdPartyProps): ManagedRuleGroup {
     const overrideAction = props.overrideToCount ? { count: {} } : { none: {} };
     const thirdPartyRuleGroup = {
       name: props.name || `${props.vendor}-${props.ruleName}`,
@@ -337,7 +337,7 @@ export class ManagedRuleGroup {
     return thirdPartyRuleGroup;
   }
 
-  private static AWS(props: ManagedRuleGroupAWSProps): ManagedRuleGroup {
+  private static aws(props: ManagedRuleGroupAWSProps): ManagedRuleGroup {
     const overrideAction = props.overrideToCount ? { count: {} } : { none: {} };
     const awsManagedRuleGroup = {
       name: props.name || props.rule,
@@ -455,12 +455,12 @@ export interface RuleProps {
 export class Rule {
   // TODO: Make sure if you get MatchLogic=MATCH_ONE that you one get one statement
   // TODO: Set the return type of each method to CfnWebACL.RuleProperty, once implemented
-  public static RateBased() {
+  public static rateBased() {
     // TODO
     return;
   }
 
-  public static Regular() {
+  public static regular() {
     // TODO
     return;
   }
@@ -474,16 +474,16 @@ export enum MatchLogic {
 }
 
 export class MatchCondition {
-  public StringMatch() {
+  public stringMatch() {
     return;
   }
-  public StringPatternMatch() {
+  public stringPatternMatch() {
     return;
   }
-  public SizeMatch() {
+  public sizeMatch() {
     return;
   }
-  public AttackMatch() {
+  public attackMatch() {
     return;
   }
 }
@@ -512,21 +512,21 @@ export interface InspectHTTPMethodProps extends StatementProps {
 
 export interface GeoMatchProps extends StatementProps {
   readonly countryCodes: string[]; // TODO: Can we provide an enum for this?
-  readonly forwardedIpConfiguration?: ForwardedIPConfiguration; // TODO: Make a better type for this
+  readonly forwardedIpConfiguration?: ForwardedIPConfiguration;
 }
 
-type ForwardedIPConfiguration = {
-  fallbackBehavior: 'MATCH' | 'NO_MATCH';
-  headerName: string;
+export interface ForwardedIPConfiguration {
+  readonly fallbackBehavior: 'MATCH' | 'NO_MATCH'; // TODO: Enum?
+  readonly headerName: string;
 };
 
-interface StatementProps {
+export interface StatementProps {
   readonly negate?: boolean;
   readonly textTransformations?: any[]; // TODO: better type
 }
 
 export class Statement {
-  public static GeoMatch(props: GeoMatchProps): Statement {
+  public static geoMatch(props: GeoMatchProps): Statement {
     const geoMatchStatement = {
       GeoMatchStatement: {
         CountryCodes: props.countryCodes,
@@ -535,55 +535,55 @@ export class Statement {
     };
     return geoMatchStatement;
   }
-  public static IPMatch() {
+  public static ipMatch() {
     // TODO: specify return type as Statement
     return;
   }
-  public static LabelMatch() {
+  public static labelMatch() {
     // TODO: specify return type as Statement
     return;
   }
-  public static InspectSingleHeader(
+  public static inspectSingleHeader(
     // props: InspectSingleHeaderProps,
   ) {
     // TODO: specify return type as Statement
     return;
   }
-  public static InspectAllHeaders() {
+  public static inspectAllHeaders() {
     // TODO: specify return type as Statement
     return;
   }
-  public static InspectCookies() {
+  public static inspectCookies() {
     // TODO: specify return type as Statement
     return;
   }
-  public static InspectSingleQueryParameter(
+  public static inspectSingleQueryParameter(
     // props: InspectSingleQueryParameterProps,
   ) {
     // TODO: specify return type as Statement
     return;
   }
-  public static InspectAllQueryParameters() {
+  public static inspectAllQueryParameters() {
     // TODO: specify return type as Statement
     return;
   }
-  public static InspectURIPath(
+  public static inspectURIPath(
     // props: InspectURIPathProps,
   ) {
     // TODO: specify return type as Statement
     return;
   }
-  public static InspectQueryString(
+  public static inspectQueryString(
     // props: InspectQueryStringProps,
   ) {
     // TODO: specify return type as Statement
     return;
   }
-  public static InspectBody() {
+  public static inspectBody() {
     // TODO: specify return type as Statement
     return;
   }
-  public static InspectHTTPMethod(
+  public static inspectHTTPMethod(
     // props: InspectHTTPMethodProps,
   ) {
     // TODO: specify return type as Statement
