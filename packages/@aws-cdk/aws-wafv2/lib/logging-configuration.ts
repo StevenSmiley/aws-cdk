@@ -7,23 +7,34 @@ import { Construct } from 'constructs';
 import { CfnLoggingConfiguration, CfnRuleGroup } from './wafv2.generated';
 import { WebACL } from './web-acl';
 
-// TODO: Annotations
+/**
+ * TODO
+ */
 export enum LogDestinationService {
   CLOUDWATCH = 'CLOUDWATCH',
   S3 = 'S3',
   KINESIS = 'KINESIS',
 }
 
+/**
+ * TODO
+ */
 export enum LoggingFilterBehavior {
   KEEP = 'KEEP',
   DROP = 'DROP',
 }
 
+/**
+ * TODO
+ */
 export enum LoggingFilterRequirement {
   MEETS_ANY = 'MEETS_ANY',
   MEETS_ALL = 'MEETS_ALL',
 }
 
+/**
+ * TODO
+ */
 export enum LoggingFilterActionConditionAction {
   ALLOW = 'ALLOW',
   BLOCK = 'BLOCK',
@@ -33,6 +44,9 @@ export enum LoggingFilterActionConditionAction {
   EXCLUDED_AS_COUNT = 'EXCLUDED_AS_COUNT',
 }
 
+/**
+ * TODO
+ */
 export interface LogDestinationConfig {
   /**
    * The AWS service to which the logs should be sent.
@@ -90,6 +104,9 @@ export interface LoggingConfigurationProps {
   readonly redactedFields?: CfnRuleGroup.FieldToMatchProperty[];
 }
 
+/**
+ * TODO
+ */
 export class LoggingConfiguration extends core.Resource {
   public readonly logDestinationArn: string;
   public readonly logGroup: logs.ILogGroup | undefined;
