@@ -454,12 +454,13 @@ export interface RuleProps {
 
 export class Rule {
   // TODO: Make sure if you get MatchLogic=MATCH_ONE that you one get one statement
-  public static RateBased(): CfnWebACL.RuleProperty {
+  // TODO: Set the return type of each method to CfnWebACL.RuleProperty, once implemented
+  public static RateBased() {
     // TODO
     return {};
   }
 
-  public static Regular(): CfnWebACL.RuleProperty {
+  public static Regular() {
     // TODO
     return {};
   }
@@ -542,7 +543,9 @@ export class Statement {
     // TODO
     return;
   }
-  public static InspectSingleHeader(props: InspectSingleHeaderProps) {
+  public static InspectSingleHeader(
+    // props: InspectSingleHeaderProps,
+  ) {
     // TODO
     return;
   }
@@ -555,7 +558,7 @@ export class Statement {
     return;
   }
   public static InspectSingleQueryParameter(
-    props: InspectSingleQueryParameterProps,
+    // props: InspectSingleQueryParameterProps,
   ) {
     // TODO
     return;
@@ -564,11 +567,15 @@ export class Statement {
     // TODO
     return;
   }
-  public static InspectURIPath(props: InspectURIPathProps) {
+  public static InspectURIPath(
+    // props: InspectURIPathProps,
+  ) {
     // TODO
     return;
   }
-  public static InspectQueryString(props: InspectQueryStringProps) {
+  public static InspectQueryString(
+    // props: InspectQueryStringProps,
+  ) {
     // TODO
     return;
   }
@@ -576,7 +583,9 @@ export class Statement {
     // TODO
     return;
   }
-  public static InspectHTTPMethod(props: InspectHTTPMethodProps) {
+  public static InspectHTTPMethod(
+    // props: InspectHTTPMethodProps,
+  ) {
     // TODO
     return;
   }
