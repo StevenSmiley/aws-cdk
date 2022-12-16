@@ -23,6 +23,8 @@ export enum Scope {
   REGIONAL = 'REGIONAL',
   /**
    * A web ACL with scope CloudFront supports CloudFront distributions only.
+   *
+   * Note: For CLOUDFRONT, you must create your WAFv2 resources in the US East (N. Virginia) Region, us-east-1.
    */
   CLOUDFRONT = 'CLOUDFRONT',
 }
