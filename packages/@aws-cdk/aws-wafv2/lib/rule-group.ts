@@ -431,10 +431,22 @@ export interface RuleGroupProps {
  * TODO
  */
 export class RuleGroup extends core.Resource {
+  /**
+   * The Amazon Resource Name (ARN) of the rule group.
+   *
+   * @attribute
+   */
+  readonly ruleGroupArn: string;
+  /**
+   * The ID of the rule group.
+   *
+   * @attribute
+   */
+  readonly ruleGroupId: string;
   constructor(scope: Construct, id: string, props: RuleGroupProps) {
     super(scope, id);
 
-    new CfnRuleGroup(this, 'RuleGroup', {
+    const resource = new CfnRuleGroup(this, 'Resource', {
       capacity: props.capacity,
       scope: props.scope,
       // customResponseBodies: props.customResponseBodies,
@@ -444,6 +456,13 @@ export class RuleGroup extends core.Resource {
       rules: props.rules as CfnWebACL.RuleProperty[],
       tags: props.tags,
     });
+
+    this.ruleGroupArn = this.getResourceArnAttribute(resource.attrArn, {
+      service: 'wafv2',
+      resource: 'rulegroup',
+      resourceName: this.physicalName,
+    });
+    this.ruleGroupId = resource.attrId;
   }
 }
 

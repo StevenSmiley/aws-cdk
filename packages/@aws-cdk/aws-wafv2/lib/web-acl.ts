@@ -110,14 +110,20 @@ export class WebACL extends core.Resource {
    * The name of the web ACL.
    *
    * You cannot change the name of a web ACL after you create it.
+   *
+   * @attribute
    */
   public readonly webAclName: string;
   /**
    * The Amazon Resource Name (ARN) of the web ACL.
+   *
+   * @attribute
    */
   public readonly webAclArn: string;
   /**
    * The ID of the web ACL.
+   *
+   * @attribute
    */
   public readonly webAclId: string;
   /**
