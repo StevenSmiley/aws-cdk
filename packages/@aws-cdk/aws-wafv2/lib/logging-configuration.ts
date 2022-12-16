@@ -120,7 +120,27 @@ export interface LogDestinationConfig {
 }
 
 /**
+ * The interface that represents a LoggingConfiguration resource.
+ */
+export interface ILoggingConfiguration extends core.IResource {
+  /**
+   * The Amazon Resource Name (ARN) of the logging configuration.
+   *
+   * @attribute
+   */
+  readonly loggingConfigurationArn: string;
+  /**
+   * The physical name of the logging configuration.
+   *
+   * @attribute
+   */
+  readonly loggingConfigurationName: string;
+}
+
+/**
  * Properties for a LoggingConfiguration.
+ * TODO: We do not provide a loggingConfigurationName contruction property because it is not supported by AWS::WAFv2::LoggingConfiguration can we disable-awslint:props-physical-name? If so, how? The below doesn't work.
+ * [disable-awslint:props-physical-name]
  */
 export interface LoggingConfigurationProps {
   /**
@@ -156,7 +176,19 @@ export interface LoggingConfigurationProps {
  *
  * @resource AWS::WAFv2::LoggingConfiguration
  */
-export class LoggingConfiguration extends core.Resource {
+export class LoggingConfiguration extends core.Resource implements ILoggingConfiguration {
+  /**
+   * The Amazon Resource Name (ARN) of the logging configuration.
+   *
+   * @attribute
+   */
+  public readonly loggingConfigurationArn: string;
+  /**
+   * The physical name of the logging configuration.
+   *
+   * @attribute
+   */
+  public readonly loggingConfigurationName: string;
   public readonly logDestinationArn: string;
   public readonly logGroup: logs.ILogGroup | undefined;
   public readonly logBucket: s3.IBucket | undefined;
@@ -284,12 +316,26 @@ export class LoggingConfiguration extends core.Resource {
         break;
     }
 
-    new CfnLoggingConfiguration(this, 'Resource', {
+    const resource = new CfnLoggingConfiguration(this, 'Resource', {
       resourceArn: props.webAcl.webAclArn,
       logDestinationConfigs: [this.logDestinationArn],
       loggingFilter: loggingFilter,
       redactedFields: redactedFields,
     });
+
+    this.loggingConfigurationName = this.getResourceNameAttribute(core.Fn.select(1, core.Fn.split('/', resource.ref)));
+    this.loggingConfigurationArn = this.getResourceArnAttribute(
+      core.Stack.of(this).formatArn({
+        service: 'wafv2',
+        resource: 'loggingconfiguration',
+        resourceName: resource.ref,
+      }),
+      {
+        service: 'wafv2',
+        resource: 'loggingconfiguration',
+        resourceName: this.physicalName,
+      },
+    );
   }
 }
 

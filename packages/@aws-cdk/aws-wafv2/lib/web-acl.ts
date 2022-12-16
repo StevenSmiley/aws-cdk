@@ -56,9 +56,31 @@ export abstract class DefaultAction {
   }
 }
 
+/**
+ * The interface that represents a WebACL resource.
+ */
+export interface IWebACL extends core.IResource {
+  /**
+   * The Amazon Resource Name (ARN) of the web ACL.
+   *
+   * @attribute
+   */
+  readonly webAclArn: string;
+  /**
+   * The name of the web ACL.
+   *
+   * You cannot change the name of a web ACL after you create it.
+   *
+   * @attribute
+   */
+  readonly webAclName: string;
+}
+
 export interface WebACLProps {
   /**
    * The name of the web ACL. You cannot change the name of a web ACL after you create it.
+   *
+   * @default - CloudFormation-generated name
    */
   readonly webAclName?: string;
   /**
@@ -117,7 +139,7 @@ export interface WebACLProps {
  *
  * @resource AWS::WAFv2::WebACL
  */
-export class WebACL extends core.Resource {
+export class WebACL extends core.Resource implements IWebACL {
   /**
    * The name of the web ACL.
    *
@@ -193,7 +215,7 @@ export class WebACL extends core.Resource {
       resource.addPropertyOverride('TokenDomains', props.tokenDomains);
     }
 
-    this.webAclName = this.getResourceNameAttribute(resource.ref);
+    this.webAclName = this.getResourceNameAttribute(core.Fn.select(0, core.Fn.split('|', resource.ref)));
     this.webAclArn = this.getResourceArnAttribute(resource.attrArn, {
       service: 'wafv2',
       resource: 'webacl',

@@ -412,6 +412,24 @@ export enum AggregateKeyType {
   FORWARDED_IP = 'FORWARDED_IP',
 }
 
+/**
+ * The interface that represents a RuleGroup resource.
+ */
+export interface IRuleGroup extends core.IResource {
+  /**
+   * The Amazon Resource Name (ARN) of the rule group.
+   *
+   * @attribute
+   */
+  readonly ruleGroupArn: string;
+  /**
+   * The physical name of the rule group.
+   *
+   * @attribute
+   */
+  readonly ruleGroupName: string;
+}
+
 // rule group: name, description?, cw metric name, rules[], capacity 1-1500. rules prioritized by order.
 export interface RuleGroupProps {
   // TODO: make this optional with default to the sum of the rules' capacity
@@ -419,7 +437,12 @@ export interface RuleGroupProps {
   // TODO: customResponseBodies
   // readonly customResponseBodies?: CfnWebACL.CustomResponseBodyProperty[];
   readonly description?: string;
-  readonly name?: string;
+  /**
+   * The name of the rule group. You cannot change the name of a rule group after you create it.
+   *
+   * @default - CloudFormation-generated name
+   */
+  readonly ruleGroupName?: string;
   readonly rules?: Rule[];
   readonly scope: Scope;
   readonly tags?: core.Tag[];
@@ -435,19 +458,25 @@ export interface RuleGroupProps {
  *
  * @resource AWS::WAFv2::RuleGroup
  */
-export class RuleGroup extends core.Resource {
+export class RuleGroup extends core.Resource implements IRuleGroup {
   /**
    * The Amazon Resource Name (ARN) of the rule group.
    *
    * @attribute
    */
-  readonly ruleGroupArn: string;
+  public readonly ruleGroupArn: string;
   /**
    * The ID of the rule group.
    *
    * @attribute
    */
-  readonly ruleGroupId: string;
+  public readonly ruleGroupId: string;
+  /**
+   * The physical name of the rule group.
+   *
+   * @attribute
+   */
+  public readonly ruleGroupName: string;
   constructor(scope: Construct, id: string, props: RuleGroupProps) {
     super(scope, id);
 
@@ -457,7 +486,7 @@ export class RuleGroup extends core.Resource {
       // customResponseBodies: props.customResponseBodies,
       visibilityConfig: props.visibilityConfig,
       description: props.description,
-      name: props.name,
+      name: props.ruleGroupName,
       rules: props.rules as CfnWebACL.RuleProperty[],
       tags: props.tags,
     });
@@ -468,6 +497,7 @@ export class RuleGroup extends core.Resource {
       resourceName: this.physicalName,
     });
     this.ruleGroupId = resource.attrId;
+    this.ruleGroupName = this.getResourceNameAttribute(core.Fn.select(0, core.Fn.split('|', resource.ref)));
   }
 }
 

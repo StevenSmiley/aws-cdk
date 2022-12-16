@@ -18,10 +18,34 @@ export enum IPAddressVersion {
 }
 
 /**
+ * The interface that represents an IPSet resource.
+ */
+export interface IIPSet extends core.IResource {
+  /**
+   * The Amazon Resource Name (ARN) of the IP set.
+   *
+   * @attribute
+   */
+  readonly ipSetArn: string;
+  /**
+   * The name of the IP set.
+   *
+   * @attribute
+   */
+  readonly ipSetName: string;
+}
+
+/**
  * TODO
  */
 export interface IPSetProps {
-  readonly name?: string;
+  /**
+   * The name of the IP set. You cannot change the name of an IPSet after you create it.
+   * TODO: We disable aws-lint here because the name doesn't seem to match the expected pattern, but it looks correct
+   * [disable-awslint:props-physical-name]
+   * @default - CloudFormation-generated name
+   */
+  readonly ipSetName?: string;
   readonly description?: string;
   readonly scope: Scope;
   readonly ipAddressVersion: IPAddressVersion;
@@ -37,7 +61,7 @@ export interface IPSetProps {
  *
  * @resource AWS::WAFv2::IPSet
  */
-export class IPSet extends core.Resource {
+export class IPSet extends core.Resource implements IIPSet {
   /**
    * The Amazon Resource Name (ARN) of the IP set.
    *
@@ -50,23 +74,35 @@ export class IPSet extends core.Resource {
    * @attribute
    */
   public readonly ipSetId: string;
+  /**
+   * The name of the IP set.
+   *
+   * @attribute
+   */
+  public readonly ipSetName: string;
+  /**
+   * The scope of the IP set.
+   */
+  public readonly scope: Scope;
   constructor(scope: Construct, id: string, props: IPSetProps) {
     super(scope, id);
 
     const resource = new CfnIPSet(this, 'Resource', {
       addresses: props.addresses,
       ipAddressVersion: props.ipAddressVersion,
-      name: props.name,
+      name: props.ipSetName,
       description: props.description,
       scope: props.scope,
       tags: props.tags,
     });
 
+    this.scope = props.scope;
     this.ipSetArn = this.getResourceArnAttribute(resource.attrArn, {
       service: 'wafv2',
       resource: 'ipset',
       resourceName: this.physicalName,
     });
     this.ipSetId = resource.attrId;
+    this.ipSetName = this.getResourceNameAttribute(core.Fn.select(0, core.Fn.split('|', resource.ref)));
   }
 }
