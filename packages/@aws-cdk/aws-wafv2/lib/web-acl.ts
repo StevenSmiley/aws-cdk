@@ -12,8 +12,18 @@ import {
 import { ManagedRuleGroup } from './rule-group';
 import { CfnWebACL, CfnWebACLAssociation } from './wafv2.generated';
 
+/**
+ * Specifies whether this is for an Amazon CloudFront distribution or for a regional application.
+ */
 export enum Scope {
+  /**
+   * A web ACL with regional scope supports an Application Load Balancer (ALB), an Amazon API Gateway REST API,
+   * an AWS AppSync GraphQL API, or an Amazon Cognito user pool.
+   */
   REGIONAL = 'REGIONAL',
+  /**
+   * A web ACL with scope CloudFront supports CloudFront distributions only.
+   */
   CLOUDFRONT = 'CLOUDFRONT',
 }
 
