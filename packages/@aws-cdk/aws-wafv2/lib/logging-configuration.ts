@@ -160,8 +160,17 @@ export class LoggingConfiguration extends core.Resource {
   public readonly logDestinationArn: string;
   public readonly logGroup: logs.ILogGroup | undefined;
   public readonly logBucket: s3.IBucket | undefined;
+  /**
+   * Indicates whether the logging configuration was created by AWS Firewall Manager, as part of an AWS WAF policy configuration.
+   * If true, only Firewall Manager can modify or delete the configuration.
+   *
+   * @attribute
+   */
+  public readonly loggingConfigurationManagedByFirewallManager: boolean;
   constructor(scope: Construct, id: string, props: LoggingConfigurationProps) {
     super(scope, id);
+
+    this.loggingConfigurationManagedByFirewallManager = false;
 
     // By default, log blocked requests only
     const loggingFilter: LoggingFilterConfiguration =
