@@ -8,44 +8,89 @@ import { CfnLoggingConfiguration, CfnRuleGroup } from './wafv2.generated';
 import { WebACL } from './web-acl';
 
 /**
- * TODO
+ * The AWS service to which logs will be sent.
  */
 export enum LogDestinationService {
+  /**
+   * Amazon CloudWatch Logs
+   */
   CLOUDWATCH = 'CLOUDWATCH',
+  /**
+   * Amazon S3
+   */
   S3 = 'S3',
+  /**
+   * Amazon Kinesis Data Firehose
+   */
   KINESIS = 'KINESIS',
 }
 
 /**
- * TODO
+ * How to handle logs that satisfy the filter's conditions and requirement.
  */
 export enum LoggingFilterBehavior {
+  /**
+   * Keep matching logs.
+   */
   KEEP = 'KEEP',
+  /**
+   * Drop matching logs.
+   */
   DROP = 'DROP',
 }
 
 /**
- * TODO
+ * Logic to apply to the filtering conditions. You can specify that, in order to satisfy the filter,
+ * a log must match all conditions or must match at least one condition.
  */
 export enum LoggingFilterRequirement {
+  /**
+   * Match at least one condition.
+   */
   MEETS_ANY = 'MEETS_ANY',
+  /**
+   * Match all conditions.
+   */
   MEETS_ALL = 'MEETS_ALL',
 }
 
 /**
- * TODO
+ * The action setting that a log record must contain in order to meet the condition. This is the action that AWS WAF applied to the web request.
+ *
+ * For rule groups, this is either the configured rule action setting, or if you've applied a rule action override to the rule,
+ * it's the override action.
  */
 export enum LoggingFilterActionConditionAction {
+  /**
+   * Match on allowed requests.
+   */
   ALLOW = 'ALLOW',
+  /**
+   * Match on blocked requests.
+   */
   BLOCK = 'BLOCK',
+  /**
+   * Match on counted requests.
+   */
   COUNT = 'COUNT',
+  /**
+   * Match on requests challenged with Captcha.
+   */
   CAPTCHA = 'CAPTCHA',
+  /**
+   * Match on requests challenged with a Challenge response.
+   */
   CHALLENGE = 'CHALLENGE',
+  /**
+   * Match on excluded rules and also on rules that have a rule action override of Count.
+   */
   EXCLUDED_AS_COUNT = 'EXCLUDED_AS_COUNT',
 }
 
 /**
- * TODO
+ * The logging destination configuration that you want to associate with the web ACL.
+ *
+ * Note: You can associate one logging destination to a web ACL.
  */
 export interface LogDestinationConfig {
   /**
