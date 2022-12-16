@@ -105,7 +105,11 @@ export interface LoggingConfigurationProps {
 }
 
 /**
- * TODO
+ * Defines an association between logging destinations and a web ACL resource, for logging from AWS WAF.
+ * As part of the association, you can specify parts of the standard logging fields to keep out of the
+ * logs and you can specify filters so that you log only a subset of the logging records.
+ *
+ * @resource AWS::WAFv2::LoggingConfiguration
  */
 export class LoggingConfiguration extends core.Resource {
   public readonly logDestinationArn: string;

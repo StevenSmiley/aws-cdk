@@ -428,7 +428,12 @@ export interface RuleGroupProps {
   // TODO
 }
 /**
- * TODO
+ * Use a RuleGroup to define a collection of rules for inspecting and controlling web requests.
+ *
+ * When you create a rule group, you define an immutable capacity limit. If you update a rule group, you must stay within the
+ * capacity. This allows others to reuse the rule group with confidence in its capacity requirements.
+ *
+ * @resource AWS::WAFv2::RuleGroup
  */
 export class RuleGroup extends core.Resource {
   /**

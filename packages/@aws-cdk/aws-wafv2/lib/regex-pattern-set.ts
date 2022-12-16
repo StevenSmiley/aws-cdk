@@ -11,7 +11,12 @@ export interface RegexPatternSetProps {
   readonly regularExpressionList: string[]
   readonly tags?: core.Tag[];
 }
-
+/**
+ * Use a RegexPatternSet to have AWS WAF inspect a web request component for a specific set
+ * of regular expression patterns.
+ *
+ * @resource AWS::WAFv2::RegexPatternSet
+ */
 export class RegexPatternSet extends core.Resource {
   /**
    * The Amazon Resource Name (ARN) of the regex pattern set.

@@ -31,6 +31,10 @@ export interface IPSetProps {
 }
 
 /**
+ * Use an IPSet to identify web requests that originate from specific IP addresses
+ * or ranges of IP addresses. For example, if you're receiving a lot of requests from a ranges
+ * of IP addresses, you can configure AWS WAF to block them using an IP set that lists those IP addresses.
+ *
  * @resource AWS::WAFv2::IPSet
  */
 export class IPSet extends core.Resource {
