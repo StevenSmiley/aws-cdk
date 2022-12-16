@@ -477,6 +477,9 @@ export class RuleGroup extends core.Resource {
 export interface RuleProps {
   readonly name: string;
   readonly action: RuleAction;
+  /**
+   * Determines how the rule evaluates statements to determine a rule match: match any statement, match all statements, or match none.
+   */
   readonly matchLogic: MatchLogic;
   readonly statements: Statement[];
   // TODO: make this optional with sane default
@@ -490,7 +493,7 @@ export interface RuleProps {
  * TODO
  */
 export class Rule {
-  // TODO: Make sure if you get MatchLogic=MATCH_ONE that you one get one statement
+  // TODO: If you get only get one statement, should we build the Statement without using AndStatement/OrStatement
   // TODO: Set the return type of each method to CfnWebACL.RuleProperty, once implemented
   /**
    * TODO
@@ -510,12 +513,20 @@ export class Rule {
 }
 
 /**
- * TODO
+ * Determines how the rule evaluates statements to determine a rule match: match any statement, match all statements, or match none.
  */
 export enum MatchLogic {
-  MATCH_ONE = 'MATCH_ONE',
+  /**
+   * Require all statements to match for the rule to match.
+   */
   MATCH_ALL = 'MATCH_ALL',
+  /**
+   * Only require a single matching statement for the rule to match.
+   */
   MATCH_ANY = 'MATCH_ANY',
+  /**
+   * Require no matching statements for the rule to match.
+   */
   MATCH_NONE = 'MATCH_NONE',
 }
 
