@@ -335,9 +335,6 @@ export class ManagedRuleGroup {
     });
   }
 
-  /**
-   * TODO
-   */
   public static thirdParty(props: ManagedRuleGroupThirdPartyProps): ManagedRuleGroup {
     const overrideAction = props.overrideToCount ? { count: {} } : { none: {} };
     const thirdPartyRuleGroup = {
@@ -522,7 +519,7 @@ export class RuleGroup extends core.Resource implements IRuleGroup {
 }
 
 /**
- * TODO
+ * Properties for a Rule
  */
 export interface RuleProps {
   readonly name: string;
@@ -540,7 +537,9 @@ export interface RuleProps {
 }
 
 /**
- * TODO
+ * A single rule, which you can use in a WebACL or RuleGroup to identify web requests that you want to
+ * allow, block, or count. Each rule includes one top-level Statement that AWS WAF uses to identify
+ * matching web requests, and parameters that govern how AWS WAF handles them.
  */
 export class Rule {
   // TODO: If you get only get one statement, should we build the Statement without using AndStatement/OrStatement
@@ -659,7 +658,9 @@ export interface GeoMatchProps extends StatementProps {
 }
 
 /**
- * TODO
+ * The configuration for inspecting IP addresses in an HTTP header that you specify, instead of using the IP address
+ * that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can
+ * specify any header name.
  */
 export interface ForwardedIPConfiguration {
   readonly fallbackBehavior: 'MATCH' | 'NO_MATCH'; // TODO: Enum?
