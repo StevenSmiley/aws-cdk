@@ -85,6 +85,8 @@ export interface WebACLProps {
   readonly webAclName?: string;
   /**
    * A description of the web ACL that helps with identification.
+   *
+   * @default - None
    */
   readonly description?: string;
   /**
@@ -96,6 +98,7 @@ export interface WebACLProps {
   readonly scope: Scope;
   /**
    * The action to perform if none of the Rules contained in the WebACL match.
+   *
    * @default - Allow
    */
   readonly defaultAction?: DefaultAction;
@@ -107,6 +110,8 @@ export interface WebACLProps {
    * The rule statements used to identify the web requests that you want to allow, block, or count.
    * Each rule includes one top-level statement that AWS WAF uses to identify matching web requests,
    * and parameters that govern how AWS WAF handles them.
+   *
+   * @default - None
    */
   // TODO: support Rule, RuleGroup
   readonly rules?: ManagedRuleGroup[];
@@ -122,7 +127,7 @@ export interface WebACLProps {
    * of the AWS resource that the web ACL is protecting. With a token domain list, AWS WAF accepts the resource's host domain
    * plus all domains in the token domain list, including their prefixed subdomains.
    *
-   * @default AWS WAF accepts tokens only for the domain of the protected resource.
+   * @default - AWS WAF accepts tokens only for the domain of the protected resource.
    */
   readonly tokenDomains?: string[];
 }

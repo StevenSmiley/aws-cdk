@@ -79,6 +79,7 @@ export class RuleAction {
 export interface ManagedRuleGroupProps {
   /**
    * The name of the rule group. You cannot change the name of a rule group after you create it.
+   * TODO: Do we need this? We don't set a name for this, right?
    */
   readonly name?: string;
   /**
@@ -89,27 +90,35 @@ export interface ManagedRuleGroupProps {
   readonly visibilityConfig?: CfnWebACL.VisibilityConfigProperty;
   /**
    * Set all rule actions to count.
+   *
+   * @default - Use the action set by the rule group.
    */
   readonly overrideToCount?: boolean;
   /**
    * The rules in the referenced rule group whose actions are set to Count. When you exclude a rule, AWS WAF evaluates it exactly
    * as it would if the rule action setting were Count. This is a useful option for testing the rules in a rule group without modifying
    * how they handle your web traffic.
+   *
+   * @default - Include all rules.
    */
   readonly excludedRules?: CfnWebACL.ExcludedRuleProperty[];
   /**
    * An optional nested statement that narrows the scope of the web requests that are evaluated by the managed rule group.
    * Requests are only evaluated by the rule group if they match the scope-down statement.
+   *
+   * @default - Evaluate all requests.
    */
   readonly scopeDownStatement?: CfnWebACL.StatementProperty;
   /**
    * The version of the managed rule group to use. If you specify this, the version setting is fixed until you change it.
-   * If you don't specify this, AWS WAF uses the vendor's default version, and then keeps the version at the vendor's default
-   * when the vendor updates the managed rule group settings.
+   *
+   * @default - Uses the vendor's default version and keep the version at the vendor's default when the vendor updates the managed rule group settings.
    */
   readonly version?: string;
   /**
    * Additional information that's used by a managed rule group. Many managed rule groups don't require this.
+   *
+   * @default - None
    */
   readonly managedRuleGroupConfigs?: CfnWebACL.ManagedRuleGroupConfigProperty[];
 }
