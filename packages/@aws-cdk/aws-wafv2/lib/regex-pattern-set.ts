@@ -21,7 +21,9 @@ export interface IRegexPatternSet extends core.IResource {
   readonly regexPatternSetName: string;
 }
 
-// TODO: Annotations
+/**
+ * Properties for a RegexPatternSet
+ */
 export interface RegexPatternSetProps {
   /**
    * The name of the set. You cannot change the name after you create the set.

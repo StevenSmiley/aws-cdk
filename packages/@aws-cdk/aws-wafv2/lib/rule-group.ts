@@ -7,8 +7,17 @@ import { Scope } from './web-acl';
  * The type of content in the payload that you are defining in the Content string.
  */
 export enum CustomResponseBodyContentType {
+  /**
+   * Plain text
+   */
   TEXT_PLAIN = 'TEXT_PLAIN',
+  /**
+   * Text with HTML formatting
+   */
   HTML = 'TEXT_HTML',
+  /**
+   * JSON
+   */
   JSON = 'APPLICATION_JSON',
 }
 
@@ -64,6 +73,9 @@ export class RuleAction {
   // CloudFormation does not yet support the Challenge action
 }
 
+/**
+ * Properties for a ManagedRuleGroup
+ */
 export interface ManagedRuleGroupProps {
   /**
    * The name of the rule group. You cannot change the name of a rule group after you create it.
@@ -102,6 +114,9 @@ export interface ManagedRuleGroupProps {
   readonly managedRuleGroupConfigs?: CfnWebACL.ManagedRuleGroupConfigProperty[];
 }
 
+/**
+ * Properties for an AWS Managed Rule Group
+ */
 export interface ManagedRuleGroupAWSProps extends ManagedRuleGroupProps {
   /**
    * The name of the managed rule group.
@@ -109,6 +124,9 @@ export interface ManagedRuleGroupAWSProps extends ManagedRuleGroupProps {
   readonly rule: string;
 }
 
+/**
+ * Properties for a Rule Group managed by a third party in the AWS Marketplace
+ */
 export interface ManagedRuleGroupThirdPartyProps extends ManagedRuleGroupProps {
   /**
    * The name of the managed rule group vendor.
@@ -430,7 +448,9 @@ export interface IRuleGroup extends core.IResource {
   readonly ruleGroupName: string;
 }
 
-// rule group: name, description?, cw metric name, rules[], capacity 1-1500. rules prioritized by order.
+/**
+ * Properties for a RuleGroup
+ */
 export interface RuleGroupProps {
   // TODO: make this optional with default to the sum of the rules' capacity
   readonly capacity: number;

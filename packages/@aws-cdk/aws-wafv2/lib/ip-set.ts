@@ -4,15 +4,15 @@ import { CfnIPSet } from './wafv2.generated';
 import { Scope } from './web-acl';
 
 /**
- * TODO
+ * The version of the IP addresses, either IPV4 or IPV6.
  */
 export enum IPAddressVersion {
   /**
-   * TODO
+   * IPv4
    */
   IPV4 = 'IPV4',
   /**
-   * TODO
+   * IPv6
    */
   IPV6 = 'IPV6',
 }
@@ -36,7 +36,7 @@ export interface IIPSet extends core.IResource {
 }
 
 /**
- * TODO
+ * Properties for an IPSet
  */
 export interface IPSetProps {
   /**
